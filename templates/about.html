@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row">
+				<h1 class="text-center">Welcome to the world's tablebase</h1>
+				<p class= "text-justify">
+					People find my explanations tedious. So I will use bullet points as an attempt for conciseness, in explaining why I made Supalist: 
+					<ul>
+						<li>I often click only the first or second entry on a google results list - even though there are millions. This only takes me to the answer I need some of the time.</li>
+						<li>In 7 out of 10 searches I do, the answer I would prefer is a list of information, ordered in some manner. Its not what I get though, so the listing and ordering has to be done mentally. So, thats as far as Wikipedia gets me (unless the page has a list).</li>
+						<li>Unfortunately 'Buzzfeed-type' articles/youtube videos usually occupy the space where I require objective list results. (Eg. 10 best laptops of 2017).</li>
+						<li>I would like to order the lists myself on my own set of criteria (in the way you can do so on an SQL database. Eg. Show laptops for sale in 
+						Chicago under $800 with x processor and x graphics card that have more than 30 upvotes. Order by 1. Dist from Chicago, 2. Price increasing, 3. Upvotes, 4. Graphics card, etc</li>
+						<li>I think that lists are useful in millions of situations. Its how we analyze things in our heads. It removes subjectivity - I don't have to go through articles desrcibing the "best" or "coolest" or "greatest" things anymore. I can rank universities/ buildings/ countries/ temperatures/ anything! on criteria I am concerned about in this instance, I </li>
+						<li>OBJECTIVITY. We don't understand the world. Wikiped, Linkedi, Twit and FB all use explanations/ paragraphs. Lists should have Qunatitative data. Qualitative analysis should be sectioned separately, as our views and ideas grow and change.</li>
+						<li>I cannot make billions of lists... and Jimmy Wales coulgn't write millions of articles. That is, Supalist will work on the concept of User Generated Content.</li>
+						<li>In a world's first, I have combined the word "Table" with "Database" to form: Tablebase! Edgy.</li>
+					</ul>
+				</p>
+			</div><hr>
+			<div class="row">
+				<form>
+					<div class="form-group">
+						<label >Find a list</label>
+						<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter keyword for list (Eg. Any noun - house, car, person, elephant..)">
+						<small id="emailHelp" class="form-text text-muted">If you can't find the list, maybe start making it?</small><br><br>
+					</div>
+					<div class="form-group">
+						<label >(Optional) Order List</label>
+						<input type="text" class="form-control" id="exampleInputPassword1" placeholder="Biggest/ Smallest/ Richest/ Prettiest">
+						<small id="emailHelp" class="form-text text-muted">Subjective adjectives to order list initially (Eg. If looking for Tallest buildings/ Richest people)</small><br><br><br>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+			<div class="row text-center">
+				<a href="#" class="btn btn-primary">HOME</a>
+			</div><br>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock%}

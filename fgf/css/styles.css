@@ -1,0 +1,56 @@
+html, body{
+	height: 100%;
+}
+
+h1{
+	font-family: 'Oswald', sans-serif;
+}
+
+h4{
+	font-family: 'Merriweather', serif;
+}
+
+.nav-pills{
+	font-family: 'Merriweather', serif;
+	opacity: 50%;
+	/*background-color: #F3F4F6;*/
+	font-size: 1em;
+}
+
+
+.pageOne{
+	background-image:url("../img/winter.jpg");
+	height: 100%;
+	/*margin: -1% -1.5% -1% -1.5%;*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.pageTwo{
+	/*margin: -1% -1.5% -1% -1.5%;*/
+	background-image:url("../img/run2.jpeg");
+	height: 100%;
+	/*margin: -1% -1.5% -1% -1.5%;*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+ }
+
+
+.pageThree{
+	/*margin: -1% -1.5% -1% -1.5%;*/
+	background-image:url("../img/chicago.jpg");
+	height: 100%;
+	/*margin: -1% -1.5% -1% -1.5%;*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+ }
+
+#title{
+	height: 70%;
+}
+
+
+

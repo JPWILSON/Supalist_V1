@@ -1,0 +1,25 @@
+#Fake Lists
+list = {'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'unique_instance':'True', 'votes':'0'}
+
+lists = [{'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'votes':'0'}, 
+{'name':'buildings', 'id':'2', 'description': 'A list describing buildings, from houses to skyscrapers', 'unique_instance':'False', 'votes':'0'},
+{'name':'cars', 'id':'3', 'description': 'A list describing all the types of cars on the planet', 'unique_instance':'False', 'votes':'0'}]
+
+
+#Fake Headings
+heading_item =  {'name':'First Name','description':'A person's first name','adjective1':'First Name','id' :'1','list_id' :'1'}
+
+heading_items = [ {'name':'First Name','description':'A person's first name','adjective1':'First Name','id' :'1','list_id' :'1'}, {'name':'Middle Name','description':'A person's middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},{'name':'Last Name','description':'A person's last name','adjective1':'Last Name','id' :'3','list_id' :'1'},{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'} ]
+
+#Fake Rows
+row_item =  {'id':'1','l_id':'1','votes':'7'}
+
+row_item = [ {'id':'1','l_id':'1','votes':'7'},{'id':'2','l_id':'1','votes':'17'},{'id':'3','l_id':'1','votes':'71'},{'id':'4','l_id':'2','votes':'6'},{'id':'5','l_id':'3','votes':'97'} ]
+
+
+#Fake Data_entry
+data_item =  {'id':'1','data':'Jean-Paul','l_id':'1','h_id' :'1'}
+
+data_items = [ {'id':'1','data':'Jean-Paul','row_id':'1','h_id' :'1'},{'id':'2','data':'none','row_id':'1','h_id' :'2'},{'id':'3','data':'Wilson','row_id':'1','h_id' :'3'},{'id':'4','data':'Michelle','row_id':'2','h_id' :'1'},{'id':'5','data':'Ingrid','row_id':'2','h_id' :'2'},{'id':'6','data':'Wilson','row_id':'2','h_id' :'3'},
+{'id':'7','data':'105000','row_id':'22','h_id' :'4'},{'id':'8','data':'85000','row_id':'23','h_id' :'4'} ]
+
