@@ -40,19 +40,19 @@
 							<td>{{h_items[0]['name']}}</td>
 							<td>{{h_items[1]['name']}}</td>
 							<td>Entry 3</td>
-							<td><a href="#" class = "btn btn-primary">View List</a></td>
+							<td><a href="{{url_for('QueryList', list_id = lists[0]['id'])}}" class = "btn btn-primary">View List</a></td>
 						</tr>
 							<td>{{lists[1]['name']}}</td>
 							<td>{{h_items[2]['name']}}</td>
 							<td>{{h_items[3]['name']}}</td>
 							<td>Entry 3</td>
-							<td><a href="#" class = "btn btn-primary">View List</a></td>
+							<td><a href="{{url_for('QueryList', list_id = lists[1]['id'])}}" class = "btn btn-primary">View List</a></td>
 						</tr>
 							<td>{{lists[2]['name']}}</td>
 							<td>{{h_items[4]['name']}}</td>
 							<td>{{h_items[5]['name']}}</td>
 							<td>Entry 3</td>
-							<td><a href="#" class = "btn btn-primary">View List</a></td>
+							<td><a href="{{url_for('QueryList', list_id = lists[2]['id'])}}" class = "btn btn-primary">View List</a></td>
 						</tr>
 					</tbody>
 				</table>

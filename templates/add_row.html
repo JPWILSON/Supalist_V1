@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row text-center">
+				<h1 class = "styled-like-supalist">{{list['name']}} and id = {{list_id}}</h1>
+				<h2 class = "styled-like-supalist  bold">ADD ENTRY</h2>
+				<table class="table table-bordered"><!-- table-condensed-->
+					<thead>
+						<tr>
+							{% for h in h_items %}
+							<th>{{h['name']}}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+
+			<form action = '#' method = 'POST'>
+					<tbody>
+						<tr>{% for h in h_items %}		
+							<td>
+								<div class="form-group">
+								<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Value for {{h['name']}}">
+								<!-- <span class = "col-md-1"></span> -->
+								</div>
+							</td>
+							{% endfor %}
+						</tr>
+					</tbody>
+				</table>
+				<br>
+
+			</div>
+			<div class="row"><br>
+				<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a><span class = "col-md-8"></span>
+				<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">ADD</a>
+			</div>
+			</form>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock %}
