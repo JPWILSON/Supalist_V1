@@ -27,6 +27,10 @@
     <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Roboto+Condensed" rel="stylesheet">
     <!-- THE FOLLOWING STYLES CAN BE PUT IN THE STYLESHEET LATER -->
     <style type="text/css">
+    hr{
+      border-top: 1px solid #8c8b8b;
+    }
+
     .bg { 
       /*background-color: #eee23e;*/
       background: -webkit-radial-gradient(#eee23e, #f4f0ad, #eeeeee); /* Safari 5.1 to 6.0 */
@@ -49,6 +53,10 @@
     .slogan{
       font-size: 14px;
       font-family: 'Roboto Condensed', sans-serif;    }
+
+    .styled-like-supalist{
+      font-family: 'Indie Flower', cursive;
+    }
 
     #ads {
       font-size: 62px;
@@ -103,7 +111,7 @@
 
         <div class="row">   <!-- HEADER ROW  -->
           <div class="col-md-5 text-center" id="top-left">
-            <div class="row"><h1 class= "text-center" id= "supalist">SUPALIST</h1></div>
+            <div class="row"><h1 class= "text-center" id= "supalist"><a href="{{url_for('Home')}}">SUPALIST</a></h1></div>
             <div class="row slogan">
               <p><b>THE WORLD IS DATA &nbsp&nbsp|&nbsp&nbsp WE WANT IT IN LISTS &nbsp&nbsp|&nbsp&nbsp BILLIONS & BILLIONS OF LISTS<b></p>
               <!--<div class="col-md-3"><p><b>THE WORLD IS DATA<b></p></div>

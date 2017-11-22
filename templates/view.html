@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row">
+				<a href="{{url_for('AddColumn', list_id = 12)}}" class = "btn btn-primary col-md-2">Add Column</a><span class = "col-md-1"></span>
+				<a href="#" class = "btn btn-primary col-md-2">Add Entry</a><span class = "col-md-1"></span>
+				<a href="#" class = "btn btn-primary col-md-2">Comment</a><span class = "col-md-1"></span>
+				<a href="#" class = "btn btn-primary col-md-2">Edit</a><span class = "col-md-1"></span>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="row text-center"><h2>{{list['name']}} and id = {{lid}}</h2></div><br>
+				<table class="table table-bordered"><!-- table-condensed-->
+					<thead>
+						<tr>
+							<th>Row ID</th>
+							{% for h in h_items %}
+							<th>{{h['name']}}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in row_items %}
+
+						<tr>
+							{% for d in d_items %}
+								<!-- <td>{{d['id']}}</td> -->
+								{% if row['id'] == d['row_id'] %}
+									<td>{{d['data']}}</td>
+								{% endif %}
+							{% endfor %}
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock %}

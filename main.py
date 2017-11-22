@@ -13,12 +13,13 @@ heading_items = [ {'name':'First Name','description':'A person\'s first name','a
 {'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
 {'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
 {'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
-{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'} ]
+{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
+{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
 
 
 #Fake Rows
 row_item =  {'id':'1','l_id':'1','votes':'7'}
-row_item = [ {'id':'1','l_id':'1','votes':'7'},{'id':'2','l_id':'1','votes':'17'},
+row_items = [ {'id':'1','l_id':'1','votes':'7'},{'id':'2','l_id':'1','votes':'17'},
 {'id':'3','l_id':'1','votes':'71'},{'id':'4','l_id':'2','votes':'6'},{'id':'5','l_id':'3','votes':'97'} ]
 
 
@@ -37,7 +38,17 @@ app = Flask(__name__)
 @app.route('/')
 def Home():
 	#return "heading of all/ top lists, or of the main menu options"
-	return render_template('about.html')
+	lists = [{'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'votes':'0'}, 
+	{'name':'buildings', 'id':'2', 'description': 'A list describing buildings, from houses to skyscrapers', 'unique_instance':'False', 'votes':'0'},
+	{'name':'cars', 'id':'3', 'description': 'A list describing all the types of cars on the planet', 'unique_instance':'False', 'votes':'0'}]
+
+	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
+	{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
+	{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
+	{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
+	{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
+	{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
+	return render_template('homepage.html', lists = lists, h_items = heading_items)
 
 @app.route('/new/')
 def NewList():
@@ -53,12 +64,32 @@ def DeleteList(list_id):
 
 @app.route('/<int:list_id>/')
 def QueryList(list_id):
-	return "A single list that you can view or inspect/query (this should be the most important\
-	 feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
+	list1 = {'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'unique_instance':'True', 'votes':'0'}
+	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
+		{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
+		{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
+		{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
+		{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
+		{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
+
+	row_items = [ {'id':'1','l_id':'1','votes':'7'},{'id':'2','l_id':'1','votes':'17'},
+		{'id':'3','l_id':'1','votes':'71'}]
+
+	data_items = [ {'id':'1','data':'Jean-Paul','row_id':'1','h_id' :'1'},{'id':'2','data':'none','row_id':'1','h_id' :'2'},
+		{'id':'3','data':'Wilson','row_id':'1','h_id' :'3'},{'id':'4','data':'Michelle','row_id':'1','h_id' :'4'},
+		{'id':'5','data':'Ingrid','row_id':'2','h_id' :'1'},{'id':'6','data':'Wilson','row_id':'2','h_id' :'2'},
+		{'id':'7','data':'105000','row_id':'2','h_id' :'3'},{'id':'8','data':'85h00','row_id':'2','h_id' :'4'}, 
+		{'id':'9','data':'Ingrhjd','row_id':'3','h_id' :'1'},{'id':'10','data':'Whjilson','row_id':'3','h_id' :'3'},
+		{'id':'11','data':'105000','row_id':'3','h_id' :'3'},{'id':'12','data':'85j000','row_id':'3','h_id' :'4'}]
+
+	return render_template('view.html', list = list1, h_items = heading_items[:4], row_items = row_items, d_items = data_items, lid = list_id)
+	#return "A single list that you can view or inspect/query (this should be the most important\
+	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
 @app.route('/<int:list_id>/new_col/')
 def AddColumn(list_id):
-	return "Add a new column (and therefore increase the usefulness of your list{}".format(list_id)
+	return render_template('add_column.html', list_id = list_id)
+	#return "Add a new column (and therefore increase the usefulness of your list{}".format(list_id)
 
 @app.route('/<int:list_id>/<int:col_id>/edit_col/')
 def EditColumn(list_id, col_id):
