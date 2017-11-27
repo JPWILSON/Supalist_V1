@@ -6,8 +6,8 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 			<div class="row text-center">
-				<h1 class = "styled-like-supalist">CREATE A NEW LIST</h1>
-				<h3 class = "styled-like-supalist">(Which should add value to many people on the planet)</h3>
+				<h1 class = "styled-like-supalist">EDIT {{lname}},  l_id: {{list_id}}</h1>
+				<h3 class = "styled-like-supalist">(Hopefully to increase value to many people on the planet who use this list)</h3>
 			</div>
 			<hr>
 		
@@ -16,13 +16,13 @@
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >List Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="List name">
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="{{lname}}">
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
-							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a List of fish (to track endangered vs not, for eg) the name would be: 'Fish'</small><br>
+							<small id="emailHelp" class="form-text text-muted">Edit the name of the list (try keep it to a single noun, eg: 'fish'</small><br>
 						</div>
 						<div class="form-group ">
 							<label for="comment">Description</label>
-							<textarea class="form-control " rows="8" id="comment" placeholder="E.G. This list will contain all fish on the planet (not individual fish, but all species, and categories). The list can be filtered depending on what you want to find from it. Filter according to location, endangered list, size, prey, food, anything that someone makes a column for..."></textarea>
+							<textarea class="form-control " rows="8" id="comment" placeholder="list['description'] will go here "></textarea>
 						</div>	
 					</div>
 					<div class = "col-md-1">
@@ -32,9 +32,9 @@
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >List Keyword (1)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1">
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="List Keyword 1">
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
-							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to a fish list, keywords could include: 'Seas', 'Food', 'Vertebrates'</small></div><span class = "col-md-1"></span>
+							<small id="emailHelp" class="form-text text-muted">These should generally only be modified to enhance searchability of the list by users of Supalist. </small></div><span class = "col-md-1"></span>
 						</div>
 
 						<div class="form-group col-md-6">
@@ -51,12 +51,31 @@
 				</div>
 				<div class="row">
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary col-md-2">CREATE LIST</button>
+						<button type="submit" class="btn btn-primary col-md-2">COMPLETE</button>
 						<span class = "col-md-8"></span>
-						<a href="{{url_for('Home')}}" class = "btn btn-primary col-md-2">CANCEL</a>
+						<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a>
 					</div>
 				</div>
 			</form>
+
+			<form action = "{{url_for('EditColumn', list_id = list_id)}}" method = "POST">
+				<div class="row text-center">
+					<h3 class="styled-like-supalist">Or, select a list heading to edit: </h3>
+						<div class="form-group col-md-7">
+							<select class="form-control" id="id_of_col" name="id_of_col">
+								<option value = "1">First Name</option>
+								<option value = "2">Location</option>
+								<option value = "3">Last Name</option>
+								<option value = "4">Net Worth</option>
+							</select>
+						</div>
+						<div class="form-group col-md-5">
+							<button type="submit" class="btn btn-primary col-md-5">EDIT HEADING</button>
+					</div>	
+			</form>
+
+
+
 			
 		</div>
 		<div class="col-md-1"></div>

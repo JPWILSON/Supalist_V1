@@ -36,6 +36,7 @@ data_items = [ {'id':'1','data':'Jean-Paul','row_id':'1','h_id' :'1'},{'id':'2',
 app = Flask(__name__)
 
 @app.route('/')
+@app.route('/home/')
 def Home():
 	#return "heading of all/ top lists, or of the main menu options"
 	lists = [{'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'votes':'0'}, 
@@ -52,11 +53,13 @@ def Home():
 
 @app.route('/new/')
 def NewList():
-	return "Page for making a new list"
+	return render_template('new_list.html')
+	#return "Page for making a new list"
 
-@app.route('/<int:list_id>/edit/')
-def EditList(list_id):
-	return "Edit a list name, or any columnlike this __ {} __ ".format(list_id)
+@app.route('/<int:list_id>/<string:lname>/edit/')
+def EditList(list_id, lname):
+	return render_template('edit_list.html', list_id = list_id, lname=lname)
+	#return "Edit a list name, or any columnlike this __ {} __ ".format(list_id)
 
 @app.route('/<int:list_id>/delete/')
 def DeleteList(list_id):
@@ -91,12 +94,14 @@ def AddColumn(list_id):
 	return render_template('add_column.html', list_id = list_id)
 	#return "Add a new column (and therefore increase the usefulness of your list{}".format(list_id)
 
-@app.route('/<int:list_id>/<int:col_id>/edit_col/')
-def EditColumn(list_id, col_id):
-	return "Edit a column (and therefore increase the usefulness of your list. \n \
+@app.route('/<int:list_id>/edit_col/', methods = ['GET', 'POST'])
+def EditColumn(list_id):
+	col_id = request.form.get('id_of_col')
+	return render_template('edit_column.html', list_id = list_id, col_id = col_id)
+	"""return "Edit a column (and therefore increase the usefulness of your list. \n \
 	Ordinarily this should be to modify or add to the descriptions on this column, or to make another column more useful. \
 	That is, \n when there are two columns doing the job that one column previosly used to do. (Eg. Address becomes:\
-	GPS co-ords in one column, and Residential addresss in another column list{}, col{})".format(list_id, col_id)
+	GPS co-ords in one column, and Residential addresss in another column list{}, col{})".format(list_id, col_id)"""
 
 @app.route('/<int:list_id>/<int:col_id>/delete_col/')
 def DeleteColumn(list_id, col_id):
@@ -117,7 +122,16 @@ def AddRow(list_id):
 
 @app.route('/<int:list_id>/<int:row_id>/edit_row/')
 def EditRow(list_id, row_id):
-	return "Edit a row from list id: list{}, with a row id of: row{})".format(list_id, row_id)
+	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
+		{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
+		{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
+		{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
+		{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
+		{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
+	#sorted_heading_items = sorted(heading_items, key = itemgetter('id'))
+	list32 = {'name': 'UNICORN LISTINGS', 'id': '1', 'description': 'A list describing companies valued over $1bn', 'unique_instance':'True', 'votes':'0'}
+	return render_template('edit_row.html', list_id = list_id, h_items = heading_items[:4], list = list32)
+	#return "Edit a row from list id: list{}, with a row id of: row{})".format(list_id, row_id)
 
 @app.route('/<int:list_id>/<int:row_id>/delete_row/')
 def DeleteRow(list_id, row_id):
@@ -130,7 +144,8 @@ def DeleteRow(list_id, row_id):
 
 @app.route('/<int:list_id>/new_comment/')
 def NewListComment(list_id):
-	return "Page for making a new comment for the list: {}.".format(list_id)
+	return render_template('new_comment.html', list_id = list_id)
+	#return "Page for making a new comment for the list: {}.".format(list_id)
 
 @app.route('/<int:list_id>/comments/')
 def ListComments(list_id):

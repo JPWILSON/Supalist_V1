@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row text-center">
+				<h1 class = "styled-like-supalist">Create a comment on this list: {{list_id}}</h1>
+				<h2 class = "styled-like-supalist">COMMENT</h2>
+			</div>
+			<hr>
+		
+			<form action = '#' method = 'POST'>
+				<div class="row">
+					<div class = "col-md-6">
+						<div class="form-group">
+							<label >Comment Name</label>
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Comment name">
+							<!-- <span class="help-block">E.G. If you wanted to add a Comment for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
+							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a Comment for middle name, for the 'people' list, the name would be: 'Middle Name'</small><br>
+						</div>
+						<div class="form-group ">
+							<label for="comment">Description</label>
+							<textarea class="form-control " rows="8" id="comment"></textarea>
+						</div>	
+					</div>
+					<div class = "col-md-1">
+						<span class = "col-md-1"></span>
+					</div>
+
+					<div class = "col-md-6">
+						<div class="form-group">
+							<label >Comment Keyword (1)</label>
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1">
+							<!-- <span class="help-block">E.G. If you wanted to add a Comment for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
+							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a Comment for middle name, for the 'people' list, keywords would include: 'Second Name', 'NickName', 'Given Name'</small></div><span class = "col-md-1"></span>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label >Comment Keyword (2 Optional)</label>
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 2">
+						</div><span class = "col-md-1"></span>
+
+						<div class="form-group col-md-6">
+							<label >Comment Keyword (3 Optional)</label><br>
+							<span class = "col-md-3"></span>
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 3">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary col-md-2">ADD COMMENT</button>
+						<span class = "col-md-8"></span>
+						<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a>
+					</div>
+				</div>
+			</form>
+			
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock %}
+
+
