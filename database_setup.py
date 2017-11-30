@@ -19,8 +19,8 @@ class User(Base):
 	user_name = Column(String(25), nullable=False, unique = True)
 	firstname = Column(String(25), nullable=True)
 	lastname = Column(String(25), nullable=True)
-	email = Column(String(45), nullable=False)
-	self_description = Column(String(45), nullable=True)
+	email = Column(String(45), nullable=True)
+	self_description = Column(String(450), nullable=True)
 
 #ASSOCIATION TABLES (MANY TO MANY RELS - EG FOR ALL THE KEYWORDS)
 
@@ -39,16 +39,17 @@ class List(Base):
 	description = Column(String(250), nullable=True)
 	votes = Column(Integer, nullable = True)
 	creator = Column(Integer, ForeignKey('user.id'))
+	user = relationship(User)
 
 	# many to many List<->Keyword
 	l_keywords = relationship('ListKeyword',secondary=list_keywords,
-		back_populates='posts')
+		back_populates='lists')
 
 class ListKeyword(Base):
 	__tablename__ = 'l_keywords'
 
 	id = Column(Integer, primary_key = True)
-	keyword = Column(String(50), nullable = False, unique = True)
+	keyword = Column(String(50), nullable = False)
 	
 	# many to many List<->Keyword
 	lists = relationship('List', secondary=list_keywords, back_populates='l_keywords')
@@ -74,6 +75,7 @@ class Row(Base):
 	
 # INDIVIDUAL ENTRIES INTO LISTS
 
+# formats can be found at: https://www.w3schools.com/sql/sql_datatypes.asp
 #This is for names, titles, nouns, locations, urls, adjectives, etc 
 class ShortTextEntry(Base):
 	__tablename__ = 'short_text'
@@ -101,6 +103,7 @@ class LongTextEntry(Base):
 	lists = relationship(Row)
 
 # This is for birthdays, or any date that needs to be entered 
+
 class DateEntry(Base):
 	__tablename__ = 'date'
 
