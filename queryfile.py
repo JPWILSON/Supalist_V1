@@ -58,7 +58,6 @@ for row in rows:
 		row_entries[row.id].append(i)
 	for i in (session.query(DateTimeEntry).filter_by(row_id = row.id).all()):
 			row_entries[row.id].append(i)
-
 	for i in (session.query(Bools).filter_by(row_id = row.id).all()):
 			row_entries[row.id].append(i)
 	for i in (session.query(TimeEntry).filter_by(row_id = row.id).all()):
