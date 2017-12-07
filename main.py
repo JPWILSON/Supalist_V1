@@ -1,5 +1,18 @@
 from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, User, list_keywords, List, ListKeyword, HeadingItem
+from database_setup import Row, ShortTextEntry, LongTextEntry, DateEntry, DateTimeEntry 
+from database_setup import Bools, TimeEntry, Duration, TwoDecimal, LargeDecimal
+
+engine = create_engine('postgresql+psycopg2://catalog:db-password@localhost/supalist1')
+Base.metadata.bind = engine 
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
+
+
+
 #Fake Lists
 list1 = {'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'unique_instance':'True', 'votes':'0'}
 lists = [{'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'votes':'0'}, 
@@ -39,17 +52,11 @@ app = Flask(__name__)
 @app.route('/home/')
 def Home():
 	#return "heading of all/ top lists, or of the main menu options"
-	lists = [{'name': 'people', 'id': '1', 'description': 'A list describing people, should have about 10billion entries I gues?', 'votes':'0'}, 
-	{'name':'buildings', 'id':'2', 'description': 'A list describing buildings, from houses to skyscrapers', 'unique_instance':'False', 'votes':'0'},
-	{'name':'cars', 'id':'3', 'description': 'A list describing all the types of cars on the planet', 'unique_instance':'False', 'votes':'0'}]
-
-	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
-	{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
-	{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
-	{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
-	{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
-	{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
-	return render_template('homepage.html', lists = lists, h_items = heading_items)
+	all_lists = session.query(List).all()
+	lists_and_headings = {}
+	for li in all_lists:
+		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
+	return render_template('homepage.html', all_lists = all_lists, lists_and_headings = lists_and_headings)
 
 @app.route('/new/')
 def NewList():
@@ -84,8 +91,35 @@ def QueryList(list_id):
 		{'id':'7','data':'105000','row_id':'2','h_id' :'3'},{'id':'8','data':'85h00','row_id':'2','h_id' :'4'}, 
 		{'id':'9','data':'Ingrhjd','row_id':'3','h_id' :'1'},{'id':'10','data':'Whjilson','row_id':'3','h_id' :'3'},
 		{'id':'11','data':'105000','row_id':'3','h_id' :'3'},{'id':'12','data':'85j000','row_id':'3','h_id' :'4'}]
+	list_to_view = session.query(List).filter_by(id = list_id).first()
+	heading_items = session.query(HeadingItem).filter_by(list_id = list_to_view.id).order_by(asc(HeadingItem.id))
+	rows = session.query(Row).filter_by(list_id = list_to_view.id).order_by(Row.id.asc())
+	row_entries = {}
+	'''for entry in ShortTextEntry:
+	if entry.'''
+	# Need to collect data entries for each of the different types of entries that are available
+	for row in rows:
+		row_entries[row.id] = session.query(ShortTextEntry).filter_by(row_id = row.id).order_by(ShortTextEntry.heading_id).all()
+		for i in (session.query(LongTextEntry).filter_by(row_id = row.id).all()):
+			row_entries[row.id].append(i)
+		for i in (session.query(DateEntry).filter_by(row_id = row.id).all()):
+			row_entries[row.id].append(i)
+		for i in (session.query(DateTimeEntry).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(Bools).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(TimeEntry).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(Duration).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(TwoDecimal).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(LargeDecimal).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
 
-	return render_template('view.html', list = list1, h_items = heading_items[:4], row_items = row_items, d_items = data_items, lid = list_id)
+
+	return render_template('view.html', list = list_to_view, h_items = heading_items[:4], row_items = row_items, d_items = data_items, lid = list_id)
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
