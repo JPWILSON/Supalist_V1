@@ -60,6 +60,7 @@ class HeadingItem(Base):
 	id = Column(Integer, primary_key=True)
 	name = Column(String(25), nullable = False)
 	description = Column(String(250), nullable=True)
+	entry_data_type = Column(Integer, nullable = False)
 	votes = Column(Integer, nullable = True)
 	list_id = Column(Integer, ForeignKey('lists.id'))
 	lists = relationship(List)

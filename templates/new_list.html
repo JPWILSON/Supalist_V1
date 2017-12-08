@@ -11,18 +11,18 @@
 			</div>
 			<hr>
 		
-			<form action = '#' method = 'POST'>
+			<form action = "{{url_for('NewList')}}" method = 'POST'>
 				<div class="row">
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >List Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="List name">
+							<input type="text" class="form-control" id="Onamer" name="namer" placeholder="List name">
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
 							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a List of fish (to track endangered vs not, for eg) the name would be: 'Fish'</small><br>
 						</div>
 						<div class="form-group ">
 							<label for="comment">Description</label>
-							<textarea class="form-control " rows="8" id="comment" placeholder="E.G. This list will contain all fish on the planet (not individual fish, but all species, and categories). The list can be filtered depending on what you want to find from it. Filter according to location, endangered list, size, prey, food, anything that someone makes a column for..."></textarea>
+							<textarea class="form-control " rows="8" id="Odesc" name="desc" placeholder="E.G. This list will contain all fish on the planet (not individual fish, but all species, and categories). The list can be filtered depending on what you want to find from it. Filter according to location, endangered list, size, prey, food, anything that someone makes a column for..."></textarea>
 						</div>	
 					</div>
 					<div class = "col-md-1">
@@ -32,20 +32,20 @@
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >List Keyword (1)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1">
+							<input type="text" class="form-control" id="Okw1" name = "kw1" placeholder="Keyword  1">
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
 							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to a fish list, keywords could include: 'Seas', 'Food', 'Vertebrates'</small></div><span class = "col-md-1"></span>
 						</div>
 
 						<div class="form-group col-md-6">
 							<label >List Keyword (2 Optional)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 2">
+							<input type="text" class="form-control" id="Okw2" name = "kw2" placeholder="Keyword 2">
 						</div><span class = "col-md-1"></span>
 
 						<div class="form-group col-md-6">
 							<label >List Keyword (3 Optional)</label><br>
 							<span class = "col-md-3"></span>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 3">
+							<input type="text" class="form-control" id="OexampleInputEmail1" name = "kw3" placeholder="Keyword 3">
 						</div>
 					</div>
 				</div>

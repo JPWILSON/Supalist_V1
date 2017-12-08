@@ -6,23 +6,23 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 			<div class="row text-center">
-				<h1 class = "styled-like-supalist">{{list_id}} - (THIS WILL BE LIST NAME)</h1>
+				<h1 class = "styled-like-supalist">{{lname}}</h1>
 				<h2 class = "styled-like-supalist">ADD COLUMN</h2>
 			</div>
 			<hr>
 		
-			<form action = '#' method = 'POST'>
+			<form action = "{{url_for('AddColumn', list_id = list_id)}}" method = 'POST'>
 				<div class="row">
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >Column Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Column name">
+							<input type="text" class="form-control" name = "namer" id="exampleInputEmail1" placeholder="Column name">
 							<!-- <span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
 							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</small><br>
 						</div>
 						<div class="form-group ">
 							<label for="comment">Description</label>
-							<textarea class="form-control " rows="8" id="comment"></textarea>
+							<textarea class="form-control " rows="8" id="comment" name = "desc"></textarea>
 						</div>	
 					</div>
 					<div class = "col-md-1">
@@ -31,21 +31,33 @@
 
 					<div class = "col-md-6">
 						<div class="form-group">
-							<label >Column Keyword (1)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1">
+							<label >Data Type</label>
+							<!-- <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1"> -->
+							<label for="sel1">Data Type (select one):</label>
+							<select class="form-control" id="sel1" name="data_type">
+								<option value = "1">1 - Short Text</option>
+								<option  value = "2">2 - Long Text</option>
+								<option  value = "3">3 - Date</option>
+								<option  value = "4">4 - Date and Time</option>
+								<option  value = "5">5 - Boolean(True/False)</option>
+								<option  value = "6">6 - Time</option>
+								<option  value = "7">7 - Duration</option>
+								<option  value = "8">8 - Two Decimal (Eg, currency)</option>
+								<option  value = "9">9 - High Precision (Many decimals)</option>
+							</select>
 							<!-- <span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
-							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a column for middle name, for the 'people' list, keywords would include: 'Second Name', 'NickName', 'Given Name'</small></div><span class = "col-md-1"></span>
+							<small id="emailHelp" class="form-text text-muted">E.G. If your heading is a date, choose date. If it is a name, choose short text, etc</small></div><span class = "col-md-1"></span>
 						</div>
 
 						<div class="form-group col-md-6">
 							<label >Column Keyword (2 Optional)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 2">
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="No keywords yet, leave blank for now...">
 						</div><span class = "col-md-1"></span>
 
 						<div class="form-group col-md-6">
 							<label >Column Keyword (3 Optional)</label><br>
 							<span class = "col-md-3"></span>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 3">
+							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="No keywords yet, leave blank for now..."">
 						</div>
 					</div>
 				</div>

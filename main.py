@@ -14,6 +14,8 @@ session = DBSession()
 
 app = Flask(__name__)
 
+user1 = session.query(User).first()
+
 @app.route('/')
 @app.route('/home/')
 def Home():
@@ -24,10 +26,26 @@ def Home():
 		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
 	return render_template('homepage.html', all_lists = all_lists, lists_and_headings = lists_and_headings)
 
-@app.route('/new/')
+@app.route('/new/', methods = ['GET', 'POST'])
 def NewList():
-	return render_template('new_list.html')
-	#return "Page for making a new list"
+	if request.method == 'POST':
+		newli = List(name = request.form['namer'], description = request.form['desc'], votes = 0, user=user1)
+		kw1 = request.form['kw1']
+		if kw1 != None:
+			newli.l_keywords.append(ListKeyword(keyword = kw1))
+		
+		kw2 = request.form['kw2']
+		if kw2 != None:
+			newli.l_keywords.append(ListKeyword(keyword = kw2))
+
+		kw3 = request.form['kw3']
+		if kw3 != None:
+			newli.l_keywords.append(ListKeyword(keyword = kw3))
+		session.add(newli)
+		session.commit()
+		return redirect(url_for('Home'))
+	else:
+		return render_template('new_list.html')
 
 @app.route('/<int:list_id>/<string:lname>/edit/')
 def EditList(list_id, lname):
@@ -72,9 +90,28 @@ def QueryList(list_id):
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
-@app.route('/<int:list_id>/new_col/')
+@app.route('/<int:list_id>/new_col/', methods = ['GET', 'POST'])
 def AddColumn(list_id):
-	return render_template('add_column.html', list_id = list_id)
+	list_to_add_to = session.query(List).filter_by(id=list_id).one()
+	if request.method == 'POST':
+		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to)
+		session.add(newhi)
+		session.commit()
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:
+		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name)
+		"""
+	kw1 = request.form['kw1']
+	if kw1 != None:
+		newli.l_keywords.append(ListKeyword(keyword = kw1))
+	
+	kw2 = request.form['kw2']
+	if kw2 != None:
+		newli.l_keywords.append(ListKeyword(keyword = kw2))
+
+	kw3 = request.form['kw3']
+	if kw3 != None:
+		newli.l_keywords.append(ListKeyword(keyword = kw3))"""
 	#return "Add a new column (and therefore increase the usefulness of your list{}".format(list_id)
 
 @app.route('/<int:list_id>/edit_col/', methods = ['GET', 'POST'])
@@ -100,6 +137,18 @@ def AddRow(list_id):
 		{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
 	#sorted_heading_items = sorted(heading_items, key = itemgetter('id'))
 	list32 = {'name': 'UNICORN LISTINGS', 'id': '1', 'description': 'A list describing companies valued over $1bn', 'unique_instance':'True', 'votes':'0'}
+
+	#list_to_add_to = session.query(List).filter_by(id=list_id).one()
+	new_row = Row(votes = 0, lists = list_id)
+	session.add(new_row)
+	session.commit()
+	if request.method == 'POST':
+		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to)
+		session.add(newhi)
+		session.commit()
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:
+		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name)
 	return render_template('add_row.html', list_id = list_id, h_items = heading_items[:4], list = list32)
 	#return "Add a new row to your list. That is, a new entry (and therefore increase the usefulness of your list with id: {}). ".format(list_id)
 
