@@ -15,6 +15,14 @@ session = DBSession()
 app = Flask(__name__)
 
 user1 = session.query(User).first()
+#This is for when I need to access the different data types: 
+li_of_dtypes = [ShortTextEntry,LongTextEntry,DateEntry,DateTimeEntry,Bools,TimeEntry,Duration,TwoDecimal,LargeDecimal]
+data_types ={}
+for i in range(0,9):
+	data_types[i] = li_of_dtypes[i]
+
+print "This is a: ", type(ShortTextEntry), type(li_of_dtypes[0])
+
 
 @app.route('/')
 @app.route('/home/')
@@ -127,29 +135,28 @@ def EditColumn(list_id):
 def DeleteColumn(list_id, col_id):
 	return "Delete this column for list number: {}, column id: {}".format(list_id, col_id)
 
-@app.route('/<int:list_id>/new_row/')
+@app.route('/<int:list_id>/new_row/', methods = ['GET', 'POST'])
 def AddRow(list_id):
-	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
-		{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
-		{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
-		{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
-		{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
-		{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
-	#sorted_heading_items = sorted(heading_items, key = itemgetter('id'))
-	list32 = {'name': 'UNICORN LISTINGS', 'id': '1', 'description': 'A list describing companies valued over $1bn', 'unique_instance':'True', 'votes':'0'}
-
-	#list_to_add_to = session.query(List).filter_by(id=list_id).one()
-	new_row = Row(votes = 0, lists = list_id)
-	session.add(new_row)
-	session.commit()
+	list_to_add_to = session.query(List).filter_by(id=list_id).one()
+	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 	if request.method == 'POST':
-		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to)
-		session.add(newhi)
+
+		new_row = Row(votes = 0, lists = list_to_add_to)
+		session.add(new_row)
 		session.commit()
+		print "new row added"
+
+		for i in range(1, len(heading_items)+1):
+			print i, data_types[heading_items[i-1].entry_data_type], "then this", request.form["name_{}".format(i)]
+			form_val = request.form["name_{}".format(i)]
+			stri = data_types[heading_items[i-1].entry_data_type]
+			print type(stri), "is a type..."
+			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row)
+			session.add(e1)
+			session.commit()
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
-		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name)
-	return render_template('add_row.html', list_id = list_id, h_items = heading_items[:4], list = list32)
+		return render_template('add_row.html', list_id = list_id, h_items = heading_items, list = list_to_add_to)
 	#return "Add a new row to your list. That is, a new entry (and therefore increase the usefulness of your list with id: {}). ".format(list_id)
 
 @app.route('/<int:list_id>/<int:row_id>/edit_row/')

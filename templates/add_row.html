@@ -11,17 +11,17 @@
 					<thead>
 						<tr>
 							{% for h in h_items %}
-							<th>{{h['name']}}</th>
+							<th>{{h.name}}</th>
 							{% endfor %}
 						</tr>
 					</thead>
 
-			<form action = '#' method = 'POST'>
+			<form action = "{{url_for('AddRow', list_id = list_id)}}" method = 'POST'>
 					<tbody>
-						<tr>{% for h in h_items %}		
+						<tr>{% for i in range(1, (h_items|length + 1)) %}		
 							<td>
 								<div class="form-group">
-								<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Value for {{h['name']}}">
+								<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i-1].name}} and {{i}}">
 								<!-- <span class = "col-md-1"></span> -->
 								</div>
 							</td>
@@ -34,7 +34,7 @@
 			</div>
 			<div class="row"><br>
 				<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a><span class = "col-md-8"></span>
-				<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">ADD</a>
+				<button type="submit" class="btn btn-primary col-md-2">ADD ROW</button>
 			</div>
 			</form>
 		</div>

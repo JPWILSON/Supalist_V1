@@ -42,6 +42,14 @@ li = session.query(List).all()
 li3 = li[0]
 #rows = session.query(Row).filter_by(list_id = li.id).order_by(asc(Row.id))
 print "list 3 id: ", li3.id 
+
+heading_items = session.query(HeadingItem).filter_by(list_id = li3.id).order_by(HeadingItem.id.asc()).all()
+print "Is heading items a list?  ", type(heading_items)
+for h in heading_items:
+	print "Heading items: ", type(h), h.name, h.id, "data type: ", h.entry_data_type 
+
+
+
 rows = session.query(Row).filter_by(list_id = li3.id).order_by(Row.id.asc()).all()
 for row in rows:
 	print row.id, "list id: ", row.list_id
@@ -85,3 +93,18 @@ for val in row_entries:
 print "Complet"
 
 #.order_by(heading.id.asc())
+
+li_of_dtypes = ['ShortTextEntry','LongTextEntry','DateEntry','DateTimeEntry','Bools','TimeEntry','Duration','TwoDecimal','LargeDecimal']
+data_types ={}
+for i in range(1,10):
+	data_types[i] = li_of_dtypes[i-1]
+
+
+for i in range(1,(len(data_types)+1)):
+	print data_types[i]
+
+
+for i in range(1, len(heading_items)+1):
+	print data_types[heading_items[i-1].entry_data_type], "WOHHAHAHA"
+print len(heading_items)
+print "Now done!"
