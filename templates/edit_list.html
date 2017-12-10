@@ -6,23 +6,23 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 			<div class="row text-center">
-				<h1 class = "styled-like-supalist">EDIT {{lname}},  l_id: {{list_id}}</h1>
-				<h3 class = "styled-like-supalist">(Hopefully to increase value to many people on the planet who use this list)</h3>
+				<h1 class = "styled-like-supalist">EDIT:  {{lname.name}}</h1>
+				<p class = "styled-like-supalist">(Hopefully you're editing simply to increase the value of this list to many people on the planet who might use it)</p>
 			</div>
 			<hr>
 		
-			<form action = '#' method = 'POST'>
+			<form action = "{{url_for('EditList', list_id = list_id)}}" method = 'POST'>
 				<div class="row">
 					<div class = "col-md-6">
 						<div class="form-group">
 							<label >List Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="{{lname}}">
+							<input type="text" class="form-control" id="exampleInputEmail1" name = "namer" value="{{lname.name}}">
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
 							<small id="emailHelp" class="form-text text-muted">Edit the name of the list (try keep it to a single noun, eg: 'fish'</small><br>
 						</div>
 						<div class="form-group ">
-							<label for="comment">Description</label>
-							<textarea class="form-control " rows="8" id="comment" placeholder="list['description'] will go here "></textarea>
+							<label>Description</label>
+							<textarea class="form-control" rows="8" id="comment" name ="desc">{{lname.description}}</textarea>
 						</div>	
 					</div>
 					<div class = "col-md-1">
@@ -31,21 +31,23 @@
 
 					<div class = "col-md-6">
 						<div class="form-group">
-							<label >List Keyword (1)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="List Keyword 1">
+							<label >Current Keywords: 
+							{% for k in keyword_list %}
+								{{k.keyword}} 
+							{% endfor %}</label><br>
 							<!-- <span class="help-block">E.G. If you wanted to add a List for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
-							<small id="emailHelp" class="form-text text-muted">These should generally only be modified to enhance searchability of the list by users of Supalist. </small></div><span class = "col-md-1"></span>
+							<small id="emailHelp" class="form-text text-muted">These KEYWORDS should generally only be modified to enhance searchability of the list by users of Supalist. </small></div><span class = "col-md-1"></span>
 						</div>
 
 						<div class="form-group col-md-6">
-							<label >List Keyword (2 Optional)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 2">
+							<label >List Keyword (Optional)</label>
+							<input type="text" class="form-control" name = "kw1" id="exampleInputEmail1" placeholder="Add another keyword if nec">
 						</div><span class = "col-md-1"></span>
 
 						<div class="form-group col-md-6">
-							<label >List Keyword (3 Optional)</label><br>
+							<label >List Keyword (Optional)</label><br>
 							<span class = "col-md-3"></span>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 3">
+							<input type="text" class="form-control" name = "kw2" id="exampleInputEmail1" placeholder="Add another keyword if nec">
 						</div>
 					</div>
 				</div>
@@ -60,7 +62,8 @@
 
 			<form action = "{{url_for('EditColumn', list_id = list_id)}}" method = "POST">
 				<div class="row text-center">
-					<h3 class="styled-like-supalist">Or, select a list heading to edit: </h3>
+					<h1 class="styled-like-supalist">OR: </h1><br>
+					<h3 class="styled-like-supalist">Select a list heading to edit: </h3>
 						<div class="form-group col-md-7">
 							<select class="form-control" id="id_of_col" name="id_of_col">
 								<option value = "1">First Name</option>

@@ -20,14 +20,16 @@ li_of_dtypes = [ShortTextEntry,LongTextEntry,DateEntry,DateTimeEntry,Bools,TimeE
 data_types ={}
 for i in range(0,9):
 	data_types[i] = li_of_dtypes[i]
-
-print "This is a: ", type(ShortTextEntry), type(li_of_dtypes[0])
-
+#This is for when I need to access the TEXT (strings) of the different data types: 
+li_of_dtypes_str = ["Short Text","Long Text","Date","Date & Time","True/False","Time","Duration","Two Decimal","Large Decimal"]
+data_types_str ={}
+for i in range(0,9):
+	data_types_str[i] = li_of_dtypes_str[i]
 
 @app.route('/')
 @app.route('/home/')
 def Home():
-	#return "heading of all/ top lists, or of the main menu options"
+	#return "headings of all/ top lists, or of the main menu options"
 	all_lists = session.query(List).all()
 	lists_and_headings = {}
 	for li in all_lists:
@@ -55,13 +57,38 @@ def NewList():
 	else:
 		return render_template('new_list.html')
 
-@app.route('/<int:list_id>/<string:lname>/edit/')
-def EditList(list_id, lname):
-	return render_template('edit_list.html', list_id = list_id, lname=lname)
-	#return "Edit a list name, or any columnlike this __ {} __ ".format(list_id)
+@app.route('/<int:list_id>/edit/', methods = ['GET', 'POST'])
+def EditList(list_id):
+	li_2_edit = session.query(List).filter_by(id = list_id).one()
+	keyword_list = []
+	for i in li_2_edit.l_keywords:
+		keyword_list.append(i)
+	if request.method == 'POST':
+		li_2_edit.name = request.form['namer']
+		li_2_edit.description = request.form['desc']
+		kw1, kw2 = request.form['kw1'], request.form['kw2']
+		if kw1 != None and kw1 not in li_2_edit.l_keywords:
+			li_2_edit.l_keywords.append(ListKeyword(keyword = kw1))
+		if kw2 != None and kw2 not in li_2_edit.l_keywords:
+			li_2_edit.l_keywords.append(ListKeyword(keyword = kw2))
+		session.add(li_2_edit)
+		session.commit()
+		return redirect(url_for('QueryList', list_id = li_2_edit.id))
+	else:
+		return render_template('edit_list.html', list_id = list_id, lname=li_2_edit, keyword_list=keyword_list)
 
-@app.route('/<int:list_id>/delete/')
+
+@app.route('/<int:list_id>/delete/', methods = ['GET', 'POST'])
 def DeleteList(list_id):
+	li_2_del = session.query(List).filter_by(id = list_id).one()
+	if request.method == 'POST':
+		session.delete(li_2_del)
+		session.commit()
+		return redirect(url_for('Home'))
+	else:
+		return render_template('delete_list.html', li_2_del = li_2_del)
+
+
 	return "Are you sure you want to delete this list? (only certain privileges will allow you to delete a list? - or never?) list{}".format(list_id)
 
 @app.route('/<int:list_id>/')
@@ -94,7 +121,7 @@ def QueryList(list_id):
 		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
 
 
-	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, row_entries = row_entries, lid = list_id)
+	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, row_entries = row_entries, lid = list_id, data_types_str = data_types_str)
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
