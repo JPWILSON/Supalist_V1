@@ -81,12 +81,91 @@ def EditList(list_id):
 @app.route('/<int:list_id>/delete/', methods = ['GET', 'POST'])
 def DeleteList(list_id):
 	li_2_del = session.query(List).filter_by(id = list_id).one()
+	headings2del = session.query(HeadingItem).filter_by(list_id = list_id).all()
+	rows_2_del = session.query(Row).filter_by(list_id = list_id).order_by(Row.id.asc()).all()
+	print type(rows_2_del), len(rows_2_del), "row id: ", rows_2_del[0].id
 	if request.method == 'POST':
+		#Delete all keywords associated to this list:
+		li_2_del.l_keywords = []
+		#First, delete the list
+		
+		#Second, delete the heading items
+
+
+		#Third, Delete every single entry: 
+		for row in rows_2_del:
+			e_2_del1 = session.query(ShortTextEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del1) > 0:
+				for w in e_2_del1:
+					session.delete(w)
+					session.commit()
+
+			e_2_del2 = session.query(LongTextEntry).filter_by(row_id = row.id).all()
+			#print "This is the e2_del2: ", len(e_2_del2), type(e_2_del2), type(e_2_del2[0]),e_2_del2[0], e_2_del2[0].entry
+			if len(e_2_del2) > 0:
+				for w in e_2_del2:
+					session.delete(w)
+					session.commit()
+
+			e_2_del3 = session.query(DateEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del3) > 0:
+				for w in e_2_del3:
+					session.delete(w)
+					session.commit()
+
+			e_2_del4 = session.query(Bools).filter_by(row_id = row.id).all()
+			if len(e_2_del4) > 0:
+				for w in e_2_del4:
+					session.delete(w)
+					session.commit()
+
+			e_2_del5 = session.query(TimeEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del5) > 0:
+				for w in e_2_del5:
+					session.delete(w)
+					session.commit()
+
+			e_2_del6 = session.query(Duration).filter_by(row_id = row.id).all()
+			if len(e_2_del6) > 0:
+				for w in e_2_del6:
+					session.delete(w)
+					session.commit()
+
+			e_2_del7 = session.query(TwoDecimal).filter_by(row_id = row.id).all()
+			if len(e_2_del7) > 0:
+				for w in e_2_del7:
+					session.delete(w)
+					session.commit()
+
+			e_2_del8 = session.query(LargeDecimal).filter_by(row_id = row.id).all()
+			if len(e_2_del8) > 0:
+				for w in e_2_del8:
+					session.delete(w)
+					session.commit()
+
+			e_2_del9 = session.query(DateTimeEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del9) > 0:
+				for w in e_2_del9:
+					session.delete(w)
+					session.commit()
+
+			#Lastly, delete every row
+		for heading in headings2del:
+			session.delete(heading)
+			session.commit()
+
+		for row in rows_2_del:
+			session.delete(row)
+			session.commit()
+
 		session.delete(li_2_del)
 		session.commit()
+
+
 		return redirect(url_for('Home'))
 	else:
-		return render_template('delete_list.html', li_2_del = li_2_del)
+		return render_template('delete_list.html', li_2_del = li_2_del, list_id = list_id, 
+			headings2del = headings2del, no_rows_2_del=len(rows_2_del))
 
 
 	return "Are you sure you want to delete this list? (only certain privileges will allow you to delete a list? - or never?) list{}".format(list_id)
@@ -121,7 +200,8 @@ def QueryList(list_id):
 		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
 
 
-	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, row_entries = row_entries, lid = list_id, data_types_str = data_types_str)
+	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, 
+		row_entries = row_entries, lid = list_id, data_types_str = data_types_str)
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
