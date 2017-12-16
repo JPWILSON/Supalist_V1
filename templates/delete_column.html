@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+
+	
+			<div class="row">
+				<div class="row text-center"><h2>Are you sure you want to DELETE the heading: "{{col.name}}" from {{li.name}} ?</h2></div><br>
+				<p>This will also delete all entries related to this heading/ column as well as the column itself!</p>
+				<h3>NOTE: This CANNOT be undone</h3>
+
+				<div class="row">
+					<form action = "{{url_for('DeleteColumn', list_id = li.id, col_id = col.id)}}" method = 'POST'>
+						<span class = "col-md-5"></span><button type="submit" class="btn btn-primary col-md-2">DELETE FOREVER</button><span class = "col-md-3">
+					</form><br>
+				</div><br>
+
+
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock %}
+
+

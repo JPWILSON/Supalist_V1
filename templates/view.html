@@ -7,7 +7,7 @@
 			<div class="row">
 				<a href="{{url_for('AddColumn', list_id = lid)}}" class = "btn btn-primary col-md-2">Add Column</a><span class = "col-md-1"></span>
 				<a href="{{url_for('AddRow', list_id = lid)}}" class = "btn btn-primary col-md-2">Add Entry</a><span class = "col-md-1"></span>
-				<a href="{{url_for('EditList', list_id = lid)}}" class = "btn btn-primary col-md-2">Edit List</a><span class = "col-md-1"></span>
+				<a href="{{url_for('HeadingList', list_id = lid)}}" class = "btn btn-primary col-md-2">Edit List (& Cols)</a><span class = "col-md-1"></span>
 				<a href="{{url_for('DeleteList', list_id = lid)}}" class = "btn btn-primary col-md-2">DELETE List</a><span class = "col-md-1"></span>
 			</div>
 			<hr>
@@ -22,7 +22,9 @@
 							{% for h in h_items %}
 							<th>{{h.name}}</th>
 							{% endfor %}
-							<th></th>
+							<th>
+								<a href="{{url_for('HeadingList', list_id = lid)}}" class = "btn btn-primary">Edit/Delete Headings</a>
+							</th>
 						</tr>
 						<tr>
 							<th>(Integer)</th>
@@ -39,7 +41,8 @@
 							{% for e in row_entries[val] %}
 								<td>{{e.entry}}</td>
 							{% endfor %}
-							<td><a href="{{url_for('EditRow', list_id = lid, row_id = 5)}}" class = "btn btn-primary ">Edit Entry</a></td>
+							<td><a href="{{url_for('EditRow', list_id = lid, row_id = val)}}" class = "btn btn-primary ">Edit Entry</a></td>
+							<td><a href="{{url_for('DeleteRow', list_id = lid, row_id = val)}}" class = "btn btn-primary ">Delete Entry</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>

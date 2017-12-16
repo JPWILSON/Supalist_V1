@@ -6,24 +6,23 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 			<div class="row text-center">
-				<h1 class = "styled-like-supalist">{{list_id}} - (THIS WILL BE LIST NAME)</h1>
-				<h2 class = "styled-like-supalist">EDIT COLUMN: {{col_id}}</h2>
+				<h1 class = "styled-like-supalist">{{list_name}} ID: {{list_id}}</h1>
+				<h2 class = "styled-like-supalist">EDIT COLUMN: {{heading.name}}</h2>
 			</div>
 			<hr>
 		
 			<form action = '#' method = 'POST'>
 				<div class="row">
 					<div class = "col-md-6">
-						<p>This is </p>
 						<div class="form-group">
 							<label >Column Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Column name">
+							<input type="text" class="form-control" id="exampleInputEmail1" name = "namer" value="{{heading.name}}">
 							<!-- <span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
 							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</small><br>
 						</div>
 						<div class="form-group ">
 							<label for="comment">Description</label>
-							<textarea class="form-control " rows="8" id="comment"></textarea>
+							<textarea class="form-control " rows="8" id="comment" name="desc">{{heading.description}}</textarea>
 						</div>	
 					</div>
 					<div class = "col-md-1">
@@ -32,11 +31,22 @@
 
 					<div class = "col-md-6">
 						<div class="form-group">
-							<label >Column Keyword (1)</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1">
+							<label >Data Type</label>
+							<!-- <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1"> -->
+							<label for="sel1">Data Type (select one):</label>
+							<select class="form-control" id="sel1" name="data_type">
+								{% for key in data_type_dict %}
+									{% if heading.entry_data_type ==  key %} 
+									<option value = "{{key}}" selected>{{data_type_dict[key]}}</option>
+									{% else %}
+									<option value = "{{key}}">{{data_type_dict[key]}}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
 							<!-- <span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
-							<small id="emailHelp" class="form-text text-muted">E.G. If you wanted to add a column for middle name, for the 'people' list, keywords would include: 'Second Name', 'NickName', 'Given Name'</small></div><span class = "col-md-1"></span>
-						</div>
+							<small id="emailHelp" class="form-text text-muted">E.G. If your heading is a date, choose date. If it is a name, choose short text, etc</small>
+						</div><span class = "col-md-1"></span>
+
 
 						<div class="form-group col-md-6">
 							<label >Column Keyword (2 Optional)</label>
@@ -52,8 +62,10 @@
 				</div>
 				<div class="row">
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary col-md-2">ADD COLUMN</button>
-						<span class = "col-md-8"></span>
+						<button type="submit" class="btn btn-primary col-md-2">Submit Edits</button>
+						<span class = "col-md-2"></span>
+						<a href="{{url_for('DeleteColumn', list_id = list_id, col_id = heading.id)}}" class = "btn btn-primary col-md-4">DELETE COLUMN</a>
+						<span class = "col-md-2"></span>
 						<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a>
 					</div>
 				</div>

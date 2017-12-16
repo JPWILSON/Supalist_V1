@@ -12,6 +12,9 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 
+#session.rollback()
+
+
 app = Flask(__name__)
 
 user1 = session.query(User).first()
@@ -60,6 +63,8 @@ def NewList():
 @app.route('/<int:list_id>/edit/', methods = ['GET', 'POST'])
 def EditList(list_id):
 	li_2_edit = session.query(List).filter_by(id = list_id).one()
+	columns_2_edit = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
+	print type(columns_2_edit), "is this a list? ", type(columns_2_edit[0]),columns_2_edit[0]
 	keyword_list = []
 	for i in li_2_edit.l_keywords:
 		keyword_list.append(i)
@@ -207,6 +212,7 @@ def QueryList(list_id):
 
 @app.route('/<int:list_id>/new_col/', methods = ['GET', 'POST'])
 def AddColumn(list_id):
+	data_types = [(0, 'ShortTextEntry'),(1,'LongTextEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'Bools'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	if request.method == 'POST':
 		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to)
@@ -214,7 +220,7 @@ def AddColumn(list_id):
 		session.commit()
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
-		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name)
+		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name, data_types=data_types)
 		"""
 	kw1 = request.form['kw1']
 	if kw1 != None:
@@ -229,21 +235,62 @@ def AddColumn(list_id):
 		newli.l_keywords.append(ListKeyword(keyword = kw3))"""
 	#return "Add a new column (and therefore increase the usefulness of your list{}".format(list_id)
 
-@app.route('/<int:list_id>/edit_col/', methods = ['GET', 'POST'])
-def EditColumn(list_id):
-	col_id = request.form.get('id_of_col')
-	return render_template('edit_column.html', list_id = list_id, col_id = col_id)
-	"""return "Edit a column (and therefore increase the usefulness of your list. \n \
-	Ordinarily this should be to modify or add to the descriptions on this column, or to make another column more useful. \
-	That is, \n when there are two columns doing the job that one column previosly used to do. (Eg. Address becomes:\
-	GPS co-ords in one column, and Residential addresss in another column list{}, col{})".format(list_id, col_id)"""
+@app.route('/<int:list_id>/heading2edit/', methods = ['GET', 'POST'])
+def HeadingList(list_id):
+	list_to_edit = session.query(List).filter_by(id = list_id).one()
+	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
+	print type(heading_items), "-- this is the type, I hope it is a list, then, a name, and then an id: ", heading_items[1].name, heading_items[0].id
+	if request.method == 'POST':
+		hid_2_edit = request.form.get('id_of_col')
+		return redirect(url_for('EditColumn', list_id = list_id, heading_id = hid_2_edit))
+	else:
+		return render_template('heading_dropdown.html', list_id = list_id, li = list_to_edit, heading_items = heading_items)
 
-@app.route('/<int:list_id>/<int:col_id>/delete_col/')
+
+
+@app.route('/<int:list_id>/<int:heading_id>/edit_heading', methods = ['GET', 'POST'])
+def EditColumn(list_id, heading_id):
+	owning_list = session.query(List).filter_by(id = list_id).one()
+	heading_2_edit = session.query(HeadingItem).filter_by(id = heading_id).one()
+	data_type_dict = {0: "ShortTextEntry", 1: "LongTextEntry", 2: "DateEntry", 3: "DateTimeEntry", 4: "Bools",
+	 5: "TimeEntry", 6: "Duration", 7: "TwoDecimal", 8: "LargeDecimal"}
+	if request.method == 'POST':
+		heading_2_edit.name = request.form['namer']
+		heading_2_edit.description = request.form['desc']
+		heading_2_edit.entry_data_type = request.form['data_type']
+		session.add(heading_2_edit)
+		session.commit()
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:
+		return render_template('edit_column.html', list_id = list_id, heading = heading_2_edit, list_name = owning_list.name, data_type_dict=data_type_dict)
+
+
+
+
+@app.route('/<int:list_id>/<int:col_id>/delete_col/', methods = ['GET', 'POST'])
 def DeleteColumn(list_id, col_id):
-	return "Delete this column for list number: {}, column id: {}".format(list_id, col_id)
+	list2del_col_4rm = session.query(List).filter_by(id = list_id).one()
+	column2del = session.query(HeadingItem).filter_by(id = col_id).one()
+
+	if request.method == 'POST':
+#Get all of the actual entries related to this column
+		for e in li_of_dtypes:
+			e_2_del = session.query(e).filter_by(heading_id = col_id).all()
+			if len(e_2_del) > 0:
+				for w in e_2_del:
+					session.delete(w)
+					session.commit()
+
+		#Now, delete the actual heading:
+		session.delete(column2del)
+		session.commit()
+		return redirect(url_for('QueryList', list_id=list_id))
+	else:
+		return render_template('delete_column.html', li = list2del_col_4rm, col = column2del)
 
 @app.route('/<int:list_id>/new_row/', methods = ['GET', 'POST'])
 def AddRow(list_id):
+
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 	if request.method == 'POST':
@@ -266,21 +313,71 @@ def AddRow(list_id):
 		return render_template('add_row.html', list_id = list_id, h_items = heading_items, list = list_to_add_to)
 	#return "Add a new row to your list. That is, a new entry (and therefore increase the usefulness of your list with id: {}). ".format(list_id)
 
-@app.route('/<int:list_id>/<int:row_id>/edit_row/')
+@app.route('/<int:list_id>/<int:row_id>/edit_row/', methods = ['GET', 'POST'])
 def EditRow(list_id, row_id):
-	heading_items = [ {'name':'First Name','description':'A person\'s first name','adjective1':'First Name','id' :'1','list_id' :'1'}, 
-		{'name':'Middle Name','description':'A person\'s middle name','adjective1':'Middle Name','id' :'2','list_id' :'1'},
-		{'name':'Last Name','description':'A person\'s last name','adjective1':'Last Name','id' :'3','list_id' :'1'},
-		{'name':'Net Worth', 'description':'Value of all personal assets','adjective1':'Richest','id' :'4','list_id' :'1'},
-		{'name':'Common Name', 'description':'What this building is known as ','adjective1':'name','id' :'5','list_id' :'2'},
-		{'name':'Make & Model', 'description':'What is this car known as ','adjective1':'name','id' :'6','list_id' :'3'} ]
-	#sorted_heading_items = sorted(heading_items, key = itemgetter('id'))
-	list32 = {'name': 'UNICORN LISTINGS', 'id': '1', 'description': 'A list describing companies valued over $1bn', 'unique_instance':'True', 'votes':'0'}
-	return render_template('edit_row.html', list_id = list_id, h_items = heading_items[:4], list = list32)
-	#return "Edit a row from list id: list{}, with a row id of: row{})".format(list_id, row_id)
+	li_2_edit = session.query(List).filter_by(id = list_id).one()
+	row_2_edit = session.query(Row).filter_by(id = row_id).one()
+	headings = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 
-@app.route('/<int:list_id>/<int:row_id>/delete_row/')
+	entries = []
+	for e in li_of_dtypes:
+		group_of_entries = session.query(e).filter_by(row_id = row_id).all()
+		if len(group_of_entries) > 0:
+			for w in group_of_entries:
+				print "Entry value is the ffg: ", w.entry, "ID", w.id, "row_id: ", w.row_id, "heading id: ", w.heading_id
+				entries.append((w.heading_id, w))
+	
+	print "before order", entries
+	entries = [b for a,b in sorted((tup[0], tup) for tup in entries)]
+	print "after order: ", entries, "one eg", entries[0][1].entry
+	print "len headings: ", len(headings), len(entries)
+	if request.method == 'POST':
+		for i in range(0, len(headings)):
+			if i < len(entries):
+				namer = str(headings[i].name)
+				#print "request form: ", request.form['{}'.format(namer)]
+				print "namer: ", namer, type(entries[i][1]), entries[i][1].entry, 'format namer-','{}'.format(namer) 
+				entries[i][1].entry = request.form["h_{}".format(namer)]
+				session.add(entries[i][1])
+				session.commit()
+				print entries[i][1].entry, "Done"
+			else:
+				e_type = li_of_dtypes[headings[i].entry_data_type]
+				print "e type: ", e_type
+				new_ent = e_type(entry = request.form['{}'.format(headings[i].name)],votes=0, heading = headings[i] , lists =row_2_edit)
+				session.add(new_ent)
+				session.commit()
+				print "2nd part also done!"
+			print "totes done"
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:
+		return render_template('edit_row.html', li_2_edit = li_2_edit, headings = headings, row_2_edit = row_2_edit, entries = entries)
+
+
+@app.route('/<int:list_id>/<int:row_id>/delete_row/', methods = ['GET', 'POST'])
 def DeleteRow(list_id, row_id):
+	list2del_col_4rm = session.query(List).filter_by(id = list_id).one()
+	row_2_del = session.query(Row).filter_by(id = row_id).one()
+	entries_2_del = []
+	for i in li_of_dtypes:
+		entry = session.query(i).filter_by(row_id = row_id).all()
+		for e in entry:
+			entries_2_del.append(e)
+
+	if request.method == 'POST':
+		for e in entries_2_del:
+			session.delete(e)
+			session.commit()
+
+		session.delete(row_2_del)
+		session.commit()
+
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:
+		return render_template('delete_row.html', lname = list2del_col_4rm.name, 
+			num_entries = len(entries_2_del), list_id = list_id, row_id = row_id)
+
+
 	return "Delete this row for list number: {}, row id: {}".format(list_id, row_id)
 
 

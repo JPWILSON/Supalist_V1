@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+
+	
+			<div class="row">
+				<div class="row text-center"><h2>Are you sure you want to DELETE this row with id "{{row_id}}" from {{lname}} ?</h2></div><br>
+				<p>This will also delete all entries related to this row!</p>
+				<h3>NOTE: This CANNOT be undone</h3>
+
+				<div class="row">
+					<form action = "{{url_for('DeleteRow', list_id = list_id, row_id = row_id)}}" method = 'POST'>
+						<span class = "col-md-5"></span><button type="submit" class="btn btn-primary col-md-2">DELETE ROW FOREVER</button><span class = "col-md-3">
+					</form><br>
+				</div><br>
+
+
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock %}
+
+

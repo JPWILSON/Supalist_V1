@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row text-center">
+				<h1 class = "styled-like-supalist">EDIT a column from: {{li.name}}</h1>
+				<p class = "styled-like-supalist">Choose a heading from the dropdown list to edit.</p><br>
+				<p class = "styled-like-supalist">(Hopefully you're editing a heading simply to increase the value of this list to many people on the planet who might use it)</p>
+			</div>
+			<hr>
+	
+
+			<form action = "{{url_for('HeadingList', list_id = li.id)}}" method = "POST">
+				<div class="row text-center">
+					<h3 class="styled-like-supalist">Select a list heading to edit: </h3>
+						<div class="form-group col-md-7">
+							<select class="form-control" id="id_of_col" name="id_of_col">
+								{% for entry in heading_items %}
+								<option value = "{{entry.id}}">{{entry.name}}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group col-md-5">
+							<button type="submit" class="btn btn-primary col-md-5">EDIT/ DELETE</button>
+							<span class = "col-md-2"></span>
+							<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-4">CANCEL</a>
+						</div>
+				</div>		
+			</form>
+
+
+
+			
+		</div>
+		<div class="col-md-1"></div>
+</div>
+{% endblock %}
+
+
