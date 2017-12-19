@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = "row" id="content">
+	<div class = "row" id="content">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+
+			<div class="row">
+				<div class="row text-center"><h2>Results for {{srch_str}}</h2></div><br>
+					<table class="table table-condensed">
+						<thead>
+							<tr>  
+								<th>List Name</th>
+								{% for i in range(1, (lists_and_headings[kw_matching_lis[0]])|length+1) %}
+
+								<th>Col {{i}}</th>
+								{% endfor%}
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{%  for li in lists_and_headings %}
+							<tr>
+								<td>{{li.name}}</td>
+								{% for heading in lists_and_headings[li] %}
+								<td>{{heading.name}}</td>
+								{%  endfor %}
+								<td><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">View List</a></td>
+							</tr>
+							{%  endfor %}
+
+						</tbody>
+					</table>
+			</div>
+			<hr>
+			<div class="row">
+				<form action = "#" method = 'POST'>
+					<div class="form-group">
+						<label >Search again</label>
+						<input type="text" class="form-control" name = "srch" id="exampleInputEmail1" placeholder="Enter keyword for list (Eg. Any noun - house, car, person, elephant..)">
+						<small id="emailHelp" class="form-text text-muted">If you can't find the list, would you mind starting it?</small><br>
+					</div>
+					<div class="form-group">
+					<!--	<label >(Optional) Order List</label>
+						<input type="text" class="form-control" id="exampleInputPassword1" placeholder="Biggest/ Smallest/ Richest/ Prettiest">
+						<small id="emailHelp" class="form-text text-muted">Subjective adjectives to order list initially (Eg. If looking for Tallest buildings/ Richest people)</small><br><br>-->
+						<button type="submit" class="btn btn-primary col-md-2">Find List</button>
+						<span class = "col-md-8"></span><a href="{{url_for('NewList')}}" class = "btn btn-primary col-md-2">Create New List</a>
+					</div>
+				</form>
+				
+			</div>
+
+
+
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+{% endblock%}

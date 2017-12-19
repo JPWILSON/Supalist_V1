@@ -11,10 +11,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
-
-#session.rollback()
-
-
 app = Flask(__name__)
 
 user1 = session.query(User).first()
@@ -30,14 +26,32 @@ for i in range(0,9):
 	data_types_str[i] = li_of_dtypes_str[i]
 
 @app.route('/')
-@app.route('/home/')
+@app.route('/home/', methods = ['GET', 'POST'])
 def Home():
 	#return "headings of all/ top lists, or of the main menu options"
 	all_lists = session.query(List).all()
 	lists_and_headings = {}
 	for li in all_lists:
 		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
-	return render_template('homepage.html', all_lists = all_lists, lists_and_headings = lists_and_headings)
+	if request.method == 'POST':
+		search_str = request.form["srch"]
+		return redirect(url_for('Result', search_str = search_str))
+	else:
+		return render_template('homepage.html', all_lists = all_lists, lists_and_headings = lists_and_headings)
+
+#
+@app.route('/results/<string:search_str>/', methods = ['GET', 'POST'])
+def Result(search_str):
+	kw_matching_lis = session.query(List).filter(List.l_keywords.any(keyword=search_str)).all()
+	lists_and_headings = {}
+	for li in kw_matching_lis:
+		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
+
+	if request.method == 'POST':
+		new_search_str = request.form["srch"]
+		return redirect(url_for('Result', search_str = new_search_str))
+	return render_template('view_results.html', kw_matching_lis = kw_matching_lis, lists_and_headings = lists_and_headings, search_str = search_str)
+
 
 @app.route('/new/', methods = ['GET', 'POST'])
 def NewList():
@@ -64,7 +78,6 @@ def NewList():
 def EditList(list_id):
 	li_2_edit = session.query(List).filter_by(id = list_id).one()
 	columns_2_edit = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
-	print type(columns_2_edit), "is this a list? ", type(columns_2_edit[0]),columns_2_edit[0]
 	keyword_list = []
 	for i in li_2_edit.l_keywords:
 		keyword_list.append(i)
@@ -88,16 +101,9 @@ def DeleteList(list_id):
 	li_2_del = session.query(List).filter_by(id = list_id).one()
 	headings2del = session.query(HeadingItem).filter_by(list_id = list_id).all()
 	rows_2_del = session.query(Row).filter_by(list_id = list_id).order_by(Row.id.asc()).all()
-	print type(rows_2_del), len(rows_2_del), "row id: ", rows_2_del[0].id
 	if request.method == 'POST':
-		#Delete all keywords associated to this list:
+		#Delete all keywords associated to this list (then entries, then headings, then rows, FINALLY, lists!) :
 		li_2_del.l_keywords = []
-		#First, delete the list
-		
-		#Second, delete the heading items
-
-
-		#Third, Delete every single entry: 
 		for row in rows_2_del:
 			e_2_del1 = session.query(ShortTextEntry).filter_by(row_id = row.id).all()
 			if len(e_2_del1) > 0:
@@ -106,7 +112,6 @@ def DeleteList(list_id):
 					session.commit()
 
 			e_2_del2 = session.query(LongTextEntry).filter_by(row_id = row.id).all()
-			#print "This is the e2_del2: ", len(e_2_del2), type(e_2_del2), type(e_2_del2[0]),e_2_del2[0], e_2_del2[0].entry
 			if len(e_2_del2) > 0:
 				for w in e_2_del2:
 					session.delete(w)
@@ -239,7 +244,6 @@ def AddColumn(list_id):
 def HeadingList(list_id):
 	list_to_edit = session.query(List).filter_by(id = list_id).one()
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
-	print type(heading_items), "-- this is the type, I hope it is a list, then, a name, and then an id: ", heading_items[1].name, heading_items[0].id
 	if request.method == 'POST':
 		hid_2_edit = request.form.get('id_of_col')
 		return redirect(url_for('EditColumn', list_id = list_id, heading_id = hid_2_edit))
@@ -294,17 +298,13 @@ def AddRow(list_id):
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 	if request.method == 'POST':
-
 		new_row = Row(votes = 0, lists = list_to_add_to)
 		session.add(new_row)
 		session.commit()
-		print "new row added"
 
 		for i in range(1, len(heading_items)+1):
-			print i, data_types[heading_items[i-1].entry_data_type], "then this", request.form["name_{}".format(i)]
 			form_val = request.form["name_{}".format(i)]
 			stri = data_types[heading_items[i-1].entry_data_type]
-			print type(stri), "is a type..."
 			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row)
 			session.add(e1)
 			session.commit()
@@ -324,31 +324,21 @@ def EditRow(list_id, row_id):
 		group_of_entries = session.query(e).filter_by(row_id = row_id).all()
 		if len(group_of_entries) > 0:
 			for w in group_of_entries:
-				print "Entry value is the ffg: ", w.entry, "ID", w.id, "row_id: ", w.row_id, "heading id: ", w.heading_id
 				entries.append((w.heading_id, w))
-	
-	print "before order", entries
+
 	entries = [b for a,b in sorted((tup[0], tup) for tup in entries)]
-	print "after order: ", entries, "one eg", entries[0][1].entry
-	print "len headings: ", len(headings), len(entries)
 	if request.method == 'POST':
 		for i in range(0, len(headings)):
 			if i < len(entries):
 				namer = str(headings[i].name)
-				#print "request form: ", request.form['{}'.format(namer)]
-				print "namer: ", namer, type(entries[i][1]), entries[i][1].entry, 'format namer-','{}'.format(namer) 
 				entries[i][1].entry = request.form["h_{}".format(namer)]
 				session.add(entries[i][1])
 				session.commit()
-				print entries[i][1].entry, "Done"
 			else:
 				e_type = li_of_dtypes[headings[i].entry_data_type]
-				print "e type: ", e_type
 				new_ent = e_type(entry = request.form['{}'.format(headings[i].name)],votes=0, heading = headings[i] , lists =row_2_edit)
 				session.add(new_ent)
 				session.commit()
-				print "2nd part also done!"
-			print "totes done"
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('edit_row.html', li_2_edit = li_2_edit, headings = headings, row_2_edit = row_2_edit, entries = entries)
