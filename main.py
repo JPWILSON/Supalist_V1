@@ -29,8 +29,8 @@ for i in range(0,9):
 @app.route('/home/', methods = ['GET', 'POST'])
 def Home():
 	#return "headings of all/ top lists, or of the main menu options"
-	all_lists = session.query(List).all()
-	lists_and_headings = {}
+	all_lists = session.query(List).order_by(List.name).all()
+	lists_and_headings = {}    
 	for li in all_lists:
 		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
 	if request.method == 'POST':

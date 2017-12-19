@@ -23,7 +23,7 @@
 			</div>
 			<hr>
 			<div class="row">
-				<div class="row text-center"><h2>TOP TABLES</h2></div><br>
+				<div class="row text-center"><h2>ALL LISTS (alphabetically)</h2></div><br>
 					<table class="table table-condensed">
 						<thead>
 							<tr>
@@ -32,10 +32,10 @@
 
 								<th>Col {{i}}</th>
 								{% endfor%}
-								<th></th>
 							</tr>
 						</thead>
 						<tbody>
+							<!--
 							{%  for li in lists_and_headings %}
 							<tr>
 								<td>{{li.name}}</td>
@@ -44,8 +44,20 @@
 								{%  endfor %}
 								<td><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">View List</a></td>
 							</tr>
-							{%  endfor %}
+							{%  endfor %}  -->
 
+
+
+
+							{%  for li in all_lists %}
+							<tr>
+								<td>{{li.name}}</td>
+								{% for heading in lists_and_headings[li] %}
+								<td>{{heading.name}}</td>
+								{%  endfor %}
+								<td><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">View List</a></td>
+							</tr>
+							{%  endfor %}
 						</tbody>
 					</table>
 			</div>

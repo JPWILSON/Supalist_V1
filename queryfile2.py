@@ -8,7 +8,7 @@ engine = create_engine('postgresql+psycopg2://catalog:db-password@localhost/supa
 Base.metadata.bind = engine 
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
-'''
+
 session.rollback()
 
 print "now, its rolled back?"
@@ -16,4 +16,5 @@ print "now, its rolled back?"
 
 kw = session.query(List).filter(List.l_keywords.any(keyword="richest")).all()
 for k in kw: 
-	print k.name
+	print k.name   
+	'''
