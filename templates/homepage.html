@@ -1,68 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-<div class = "row" id="content">
-	<div class = "row" id="content">
+
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
+			<div class="row">&nbsp</div>
 			<div class="row">
 				<form action = "{{url_for('Home')}}" method = 'POST'>
 					<div class="form-group">
-						<label >Find a list</label>
-						<input type="text" class="form-control" name = "srch" id="exampleInputEmail1" placeholder="Enter keyword for list (Eg. Any noun - house, car, person, elephant..)">
-						<small id="emailHelp" class="form-text text-muted">If you can't find the list, would you mind starting it?</small><br>
+						<label class = "inline col-md-2">Find a list:</label>
+						<input type="text" class="form-inline col-md-9" name = "srch" id="exampleInputEmail1" placeholder="Enter keyword for list (Eg. Any noun - house, car, person, elephant..)">
+						<br>
 					</div>
-					<div class="form-group">
+					<div class="form-group"><br>
 					<!--	<label >(Optional) Order List</label>
 						<input type="text" class="form-control" id="exampleInputPassword1" placeholder="Biggest/ Smallest/ Richest/ Prettiest">
 						<small id="emailHelp" class="form-text text-muted">Subjective adjectives to order list initially (Eg. If looking for Tallest buildings/ Richest people)</small><br><br>-->
 						<button type="submit" class="btn btn-primary col-md-2">Find List</button>
-						<span class = "col-md-8"></span><a href="{{url_for('NewList')}}" class = "btn btn-primary col-md-2">Create New List</a>
+						<span class = "col-md-8"></span><a href="{{url_for('NewList')}}" class = "btn btn-primary col-md-2">Create New List</a><br>
+						<div class="row">
+							<div class="col-md-9"></div>
+							<small id="emailHelp" class="text-muted">List not here? Why not start one?</small>
+						</div>
 					</div>
 				</form>
 				
 			</div>
-			<hr>
+
 			<div class="row">
-				<div class="row text-center"><h2>ALL LISTS (alphabetically)</h2></div><br>
-					<table class="table table-condensed">
-						<thead>
-							<tr>
-								<th>List Name</th>
-								{% for i in range(1, (lists_and_headings[all_lists[0]])|length+1) %}
+				<div class="row text-center"><h2>FIND A LIST</h2></div><br>
+					<div class="table table_scroll">
+						<!--<table class="table-responsive"><br>-->
+						<table class="table table-striped table-bordered table-hover table-condensed"><br>
+							<thead>
+								<tr>
+									<th>LIST NAME</th>
+									{% for i in range(1, (lists_and_headings[all_lists[0]])|length+1) %}
 
-								<th>Col {{i}}</th>
-								{% endfor%}
-							</tr>
-						</thead>
-						<tbody>
-							<!--
-							{%  for li in lists_and_headings %}
-							<tr>
-								<td>{{li.name}}</td>
-								{% for heading in lists_and_headings[li] %}
-								<td>{{heading.name}}</td>
+									<th>HDNG_{{i}}</th>
+									{% endfor%}
+								</tr>
+							</thead>
+							<tbody>
+								{%  for li in all_lists %}
+								<tr>
+									<td class="bold"><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">{{li.name}}</a></td>
+									{% for heading in lists_and_headings[li] %}
+									<td>{{heading.name}}</td>
+									{%  endfor %}
+								</tr>
 								{%  endfor %}
-								<td><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">View List</a></td>
-							</tr>
-							{%  endfor %}  -->
-
-
-
-
-							{%  for li in all_lists %}
-							<tr>
-								<td>{{li.name}}</td>
-								{% for heading in lists_and_headings[li] %}
-								<td>{{heading.name}}</td>
-								{%  endfor %}
-								<td><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">View List</a></td>
-							</tr>
-							{%  endfor %}
-						</tbody>
-					</table>
+							</tbody>
+						</table>
+					</div>
 			</div>
 		</div>
 		<div class="col-md-1"></div>
-	</div>
-</div>
 {% endblock%}
