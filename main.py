@@ -264,6 +264,14 @@ def NewList():
 	else:
 		return render_template('new_list.html')
 
+@app.route('/<int:list_id>/details/')
+def ListDetails(list_id):
+	li_2_detail = session.query(List).filter_by(id = list_id).one()
+	num_headings = len(session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all())
+	num_entries = len(session.query(Row).filter_by(list_id = list_id).order_by(Row.id.asc()).all())
+	return render_template('list_details.html', li_2_detail = li_2_detail, num_headings = num_headings, num_entries = num_entries)
+
+
 @app.route('/<int:list_id>/edit/', methods = ['GET', 'POST'])
 def EditList(list_id):
 	li_2_edit = session.query(List).filter_by(id = list_id).one()

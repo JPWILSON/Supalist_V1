@@ -28,7 +28,7 @@
 
 			<div class="row">
 				<div class="row text-center"><h2>FIND A LIST</h2></div><br>
-					<div class="table table_scroll">
+					<div class="table table_scroll" id="double_scroll">
 						<!--<table class="table-responsive"><br>-->
 						<table class="table table-striped table-bordered table-hover table-condensed"><br>
 							<thead>
@@ -36,14 +36,14 @@
 									<th>LIST NAME</th>
 									{% for i in range(1, (lists_and_headings[all_lists[0]])|length+1) %}
 
-									<th>HDNG_{{i}}</th>
+									<th>{{i}}</th>
 									{% endfor%}
 								</tr>
 							</thead>
 							<tbody>
 								{%  for li in all_lists %}
 								<tr>
-									<td class="bold"><a href="{{url_for('QueryList', list_id = li.id)}}" class = "btn btn-primary">{{li.name}}</a></td>
+									<td class="bold"><a href="{{url_for('QueryList', list_id = li.id)}}" >{{li.name}}</a></td><!--class = "btn btn-primary"-->
 									{% for heading in lists_and_headings[li] %}
 									<td>{{heading.name}}</td>
 									{%  endfor %}
@@ -54,5 +54,14 @@
 					</div>
 			</div>
 		</div>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+
 		<div class="col-md-1"></div>
+		<script src="{{url_for('static', filename='js/doubleScroll.js')}}"></script>
+		<script>
+			$(document).ready(function(){
+  				$('#double_scroll').doubleScroll();
+			});
+		</script>
 {% endblock%}
