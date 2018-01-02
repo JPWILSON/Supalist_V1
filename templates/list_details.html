@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="row text-center">
+				<h1> <span class = "styled-like-supalist"> LIST: </span>{{li_2_detail.name}}</h1>
+				<h3 class = "styled-like-supalist"></h3>
+			</div>
+			<hr>
+			<div class="row text-center">
+				<h3 >Description: </h3>
+				<p>{{li_2_detail.description}}</p><br>
+			</div>
+
+			<div class="row text-center">
+				<p class = "col-md-4">
+					<em>No. of headings (columns): </em>{{num_headings}}
+				</p>
+				<span class = "col-md-4"></span>
+				<p class = "col-md-4">
+					<em>No. of entries (rows): </em>{{num_entries}}
+				</p>
+			</div>
+			<a href="{{url_for('QueryList', list_id = li_2_detail.id)}}" class = "btn btn-primary col-md-2">BACK TO LIST</a><br><br><br>
+		</div>
+		<div class="col-md-1"></div><br>
+
+{% endblock %}
+
+
