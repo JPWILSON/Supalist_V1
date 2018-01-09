@@ -144,25 +144,33 @@
             </div>
             <div class="row">&nbsp</div>
           </div>
-          <div class="col-md-4"></div>
-          <div class="col-md-2">
+          <div class="col-md-3">
+            <div class="row" id="info_spacer"></div>
+            {% if logged_in == true %}
+            <a href="{{url_for('Home')}}">Signed In as: {{un}}</a>
+            {% endif %}
+          </div>
+          <div class="col-md-3">
               <div class="row" id="info_spacer"></div>
               <div class="row text-center " id = "nav"> 
                     <!--<div class="col-md-2">Notifications</div>
                     <div class="col-md-2">Comments</div>
-                    <div class="col-md-2">Logout</div>
-                    <div class="col-md-2">Profile</div>-->
-                    <div class="col-md-2">
+                    <div class="col-md-2">Profile</div><div class="col-md-2">
+                    <div class="col-md-2"><a href="{{ url_for('gdisconnect') }}">Logout</a></div>-->
+                                       
                     <a href="{{url_for('About')}}">About</a>
-                    </div>
                     <span class = "col-md-2"></span>
-                    <div class="col-md-2">Signin/up</div>
+                    {% if logged_in == true %}
+                      <div class="col-md-2"><a href="{{ url_for('gdisconnect') }}">Logout</a></div>
+                    {% else %}
+                      <div class="col-md-2"><a href="{{ url_for('showLogin') }}">Login</a></div>
+                    {% endif %}
                     <span class = "col-md-2"></span>
-                    <div class="col-md-2">Contact</div>
+                    <div class="col-md-2"><a href="mailto:someone@example.com?Subject=Hello%20again" target="_top">Contact</a></div>
                     <span class = "col-md-2"></span>
               </div>
           </div>
-          <div class="col-md-4"></div>
+          <div class="col-md-1"></div>
         </div> <!-- END OF HEADER ROW  -->
 
         <div class="row"> <!-- BODY ROW  -->

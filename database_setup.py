@@ -14,13 +14,14 @@ from sqlalchemy import BLOB, Numeric, Boolean, Float
 Base = declarative_base()
 
 class User(Base):
-	__tablename__ = 'user'
+	__tablename__ = 'usery'
 
 	id = Column(Integer, primary_key = True)
 	user_name = Column(String(25), nullable=False, unique = True)
 	firstname = Column(String(25), nullable=True)
 	lastname = Column(String(25), nullable=True)
-	email = Column(String(45), nullable=True)
+	email = Column(String(45), nullable=False)
+	picture = Column(String(250)) 
 	self_description = Column(String(450), nullable=True)
 
 #ASSOCIATION TABLES (MANY TO MANY RELS - EG FOR ALL THE KEYWORDS)
@@ -29,6 +30,21 @@ class User(Base):
 list_keywords = Table('list_keywords', Base.metadata,
 	Column('list_id', ForeignKey('lists.id'), primary_key=True),
 	Column('keyword_id', ForeignKey('l_keywords.id'), primary_key=True))
+
+# From :  http://bitwiser.in/2015/09/09/add-google-login-in-flask.html
+"""
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=True)
+    avatar = db.Column(db.String(200))
+    active = db.Column(db.Boolean, default=False)
+    tokens = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+"""
+# Experimenting, not actually part of the code
+
 
 
 #Dont forget, there is an association table with 
@@ -39,7 +55,7 @@ class List(Base):
 	name = Column(String(25), nullable=False)
 	description = Column(String(250), nullable=True)
 	votes = Column(Integer, nullable = True)
-	creator = Column(Integer, ForeignKey('user.id'))
+	user_id = Column(Integer, ForeignKey('usery.id'))
 	user = relationship(User)
 
 	# many to many List<->Keyword
@@ -65,6 +81,9 @@ class HeadingItem(Base):
 	votes = Column(Integer, nullable = True)
 	list_id = Column(Integer, ForeignKey('lists.id'))
 	lists = relationship(List)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 	
 
 class Row(Base):
@@ -74,6 +93,9 @@ class Row(Base):
 	votes = Column(Integer, nullable = True)
 	list_id = Column(Integer, ForeignKey('lists.id'))
 	lists = relationship(List)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 	
 # INDIVIDUAL ENTRIES INTO LISTS
 
@@ -91,6 +113,9 @@ class ShortTextEntry(Base):
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
 
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
 # This is for descriptions, long addresses, etc 
 class LongTextEntry(Base):
 	__tablename__ = 'long_text'
@@ -103,6 +128,9 @@ class LongTextEntry(Base):
 	heading = relationship(HeadingItem)
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 
 # This is for birthdays, or any date that needs to be entered 
 
@@ -118,6 +146,9 @@ class DateEntry(Base):
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
 
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
 
 # Precise dates, that include the time
 class DateTimeEntry(Base):
@@ -132,6 +163,9 @@ class DateTimeEntry(Base):
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
 
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
 # Boolean
 class Bools(Base):
 	__tablename__ = 'bools'
@@ -145,6 +179,9 @@ class Bools(Base):
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
 
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
 # The time
 class TimeEntry(Base):
 	__tablename__ = 'time'
@@ -157,6 +194,9 @@ class TimeEntry(Base):
 	heading = relationship(HeadingItem)
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 
 
 
@@ -173,6 +213,9 @@ class Duration(Base):
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
 
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
 # 2 decimal places, currency 
 class TwoDecimal(Base):
 	__tablename__ = 'currency'
@@ -185,6 +228,9 @@ class TwoDecimal(Base):
 	heading = relationship(HeadingItem)
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 
 
 # For any precision number 
@@ -199,6 +245,9 @@ class LargeDecimal(Base):
 	heading = relationship(HeadingItem)
 	row_id = Column(Integer, ForeignKey('row.id'))
 	lists = relationship(Row)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
 
 # Blobs for bits, like images? 
 """class Blobs(Base):
