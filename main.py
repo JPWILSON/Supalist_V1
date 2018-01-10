@@ -141,6 +141,7 @@ def gconnect():
     login_session['user_id'] = user_id
 
 
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -172,8 +173,8 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
     print 'result type:', type(result) , 'result is '
     print result
-    #if result['status'] == '200' or ('must-revalidate' in result['cache-control']):
-    if result['status'] == '200':
+    #if result['status'] == '200':
+    if result['status'] == '200' or ('must-revalidate' in result['cache-control']):
         del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
@@ -187,15 +188,6 @@ def gdisconnect():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
-
-
-
-
-
-
-
-
-
 
 
 
@@ -247,8 +239,8 @@ def Result(search_str):
 	if request.method == 'POST':
 		new_search_str = request.form["srch"]
 		return redirect(url_for('Result', search_str = new_search_str))
-	return render_template('view_results.html', kw_matching_lis = kw_matching_lis, lists_and_headings = lists_and_headings, search_str = search_str
-		, logged_in=logged_in, un=un)
+	return render_template('view_results.html', kw_matching_lis = kw_matching_lis, lists_and_headings = lists_and_headings, 
+		search_str = search_str, logged_in=logged_in, un=un)
 
 
 @app.route('/about/')
