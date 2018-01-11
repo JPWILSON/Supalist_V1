@@ -267,7 +267,7 @@ def NewList():
 		un = login_session['username']
 
 	if request.method == 'POST':
-		newli = List(name = request.form['namer'], description = request.form['desc'], votes = 0, user=user1)
+		newli = List(name = request.form['namer'], description = request.form['desc'], votes = 0, user=getUser())
 		kw1 = request.form['kw1']
 		if kw1 != None:
 			newli.l_keywords.append(ListKeyword(keyword = kw1))
@@ -478,7 +478,7 @@ def AddColumn(list_id):
 	data_types = [(0, 'ShortTextEntry'),(1,'LongTextEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'Bools'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	if request.method == 'POST':
-		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to)
+		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to, user=getUser())
 		session.add(newhi)
 		session.commit()
 		return redirect(url_for('QueryList', list_id = list_id))
@@ -591,14 +591,14 @@ def AddRow(list_id):
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 	if request.method == 'POST':
-		new_row = Row(votes = 0, lists = list_to_add_to)
+		new_row = Row(votes = 0, lists = list_to_add_to, user = getUser())
 		session.add(new_row)
 		session.commit()
 
 		for i in range(1, len(heading_items)+1):
 			form_val = request.form["name_{}".format(i)]
 			stri = data_types[heading_items[i-1].entry_data_type]
-			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row)
+			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row, user = getUser())
 			session.add(e1)
 			session.commit()
 		return redirect(url_for('QueryList', list_id = list_id))
@@ -802,6 +802,14 @@ def getUserID(email):
         return user.id
     except:
         return None
+
+def getUser():
+	"""Use this method when declaring a new list, row, heading, entry"""
+	try:
+		user = session.query(User).filter_by(email = login_session['email']).one()
+		return user
+	except:
+		return None
 
 # Make a page to add additional info on the user - like a description, first name, last name, age, etc....
 #____COMMENT COMMENTS______ - I don't think this is necessary? 
