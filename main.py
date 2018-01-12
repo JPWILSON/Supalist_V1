@@ -346,6 +346,7 @@ def DeleteList(list_id):
 	li_2_del = session.query(List).filter_by(id = list_id).one()
 	headings2del = session.query(HeadingItem).filter_by(list_id = list_id).all()
 	rows_2_del = session.query(Row).filter_by(list_id = list_id).order_by(Row.id.asc()).all()
+
 	if request.method == 'POST':
 		#Delete all keywords associated to this list (then entries, then headings, then rows, FINALLY, lists!) :
 		li_2_del.l_keywords = []
@@ -440,6 +441,15 @@ def QueryList(list_id):
 	rows = session.query(Row).filter_by(list_id = list_to_view.id).order_by(Row.id.asc())
 	row_entries = {}
 
+	#Defining the logic determining creator of item (only person allowed to delete)
+	owner = list_to_view.user
+	deletable_l = False # This is val passed to template about wether delete button (for lists) will do what's required or popup saying not allowed 
+	# to delete because not creator of ths thing (list, heading, row, entry)
+	#print "OWNER IS: ",owner.user_name, "un is: ", un
+	if owner.user_name == un:
+		deletable_l = True
+
+
 	# Need to collect data entries for each of the different types of entries that are available
 	for row in rows:
 		row_entries[row.id] = session.query(ShortTextEntry).filter_by(row_id = row.id).order_by(ShortTextEntry.heading_id).all()
@@ -461,7 +471,7 @@ def QueryList(list_id):
 				row_entries[row.id].append(i)
 		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
 	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, 
-		row_entries = row_entries, lid = list_id, data_types_str = data_types_str, logged_in=logged_in, un=un)
+		row_entries = row_entries, lid = list_id, data_types_str = data_types_str, logged_in=logged_in, un=un, deletable_l = deletable_l)
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
@@ -522,7 +532,6 @@ def HeadingList(list_id):
 
 @app.route('/<int:list_id>/<int:heading_id>/edit_heading', methods = ['GET', 'POST'])
 def EditColumn(list_id, heading_id):
-
 #Logged in logic and rules (permissions, etc)
 	logged_in = False
 	un = ''
@@ -534,6 +543,16 @@ def EditColumn(list_id, heading_id):
 	heading_2_edit = session.query(HeadingItem).filter_by(id = heading_id).one()
 	data_type_dict = {0: "ShortTextEntry", 1: "LongTextEntry", 2: "DateEntry", 3: "DateTimeEntry", 4: "Bools",
 	 5: "TimeEntry", 6: "Duration", 7: "TwoDecimal", 8: "LargeDecimal"}
+
+	#Defining the logic determining creator of item (only person allowed to delete)
+	owner = heading_2_edit.user
+	deletable_h = False # This is val passed to template about wether delete button (for lists) will do what's required or popup saying not allowed 
+	# to delete because not creator of ths thing (list, heading, row, entry)
+	#print "OWNER IS: ",owner.user_name, "un is: ", un
+	if owner.user_name == un:
+		deletable_h = True
+	print deletable_h
+
 	if request.method == 'POST':
 		heading_2_edit.name = request.form['namer']
 		heading_2_edit.description = request.form['desc']
@@ -543,7 +562,7 @@ def EditColumn(list_id, heading_id):
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('edit_column.html', list_id = list_id, heading = heading_2_edit, list_name = owning_list.name, 
-			data_type_dict=data_type_dict, logged_in=logged_in, un=un)
+			data_type_dict=data_type_dict, logged_in=logged_in, un=un, deletable_h = deletable_h)
 
 
 
@@ -659,6 +678,17 @@ def DeleteRow(list_id, row_id):
 
 	list2del_col_4rm = session.query(List).filter_by(id = list_id).one()
 	row_2_del = session.query(Row).filter_by(id = row_id).one()
+
+	#Defining the logic determining creator of item (only person allowed to delete)
+	owner = row_2_del.user
+	deletable_r = False # This is val passed to template about wether delete button (for lists) will do what's required or popup saying not allowed 
+	# to delete because not creator of ths thing (list, heading, row, entry)
+	#print "OWNER IS: ",owner.user_name, "un is: ", un
+	if owner.user_name == un:
+		deletable_r = True
+	print deletable_r
+
+
 	entries_2_del = []
 	for i in li_of_dtypes:
 		entry = session.query(i).filter_by(row_id = row_id).all()
@@ -676,7 +706,7 @@ def DeleteRow(list_id, row_id):
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('delete_row.html', lname = list2del_col_4rm.name, 
-			num_entries = len(entries_2_del), list_id = list_id, row_id = row_id, logged_in=logged_in, un=un)
+			num_entries = len(entries_2_del), list_id = list_id, row_id = row_id, logged_in=logged_in, un=un, deletable_r=deletable_r)
 
 
 	return "Delete this row for list number: {}, row id: {}".format(list_id, row_id)

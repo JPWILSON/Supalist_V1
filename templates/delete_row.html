@@ -1,5 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!-- THE POINT OF THIS <style> IS FOR THE POPUP ON THE DELETE BUTTONS _ MAKE NEATER LATER-->
+<style>
+/* Popup container - can be anything you want */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+</style>
+
+
 <div class = "row" id="content">
 	<div class = "row" id="content">
 		<div class="col-md-1"></div>
@@ -7,22 +69,52 @@
 
 	
 			<div class="row">
-				<div class="row text-center"><h2>Are you sure you want to DELETE this row with id "{{row_id}}" from {{lname}} ?</h2></div><br>
-				<p>This will also delete all entries related to this row!</p>
-				<h3>NOTE: This CANNOT be undone</h3>
-
-				<div class="row">
-					<form action = "{{url_for('DeleteRow', list_id = list_id, row_id = row_id)}}" method = 'POST'>
-						<span class = "col-md-5"></span><button type="submit" class="btn btn-primary col-md-2">DELETE ROW FOREVER</button><span class = "col-md-3">
-					</form><br>
+				<div class="row text-center">
+					<h2>DELETE ROW?</h2>
+					<p class="text-center"> (Only the creator of the row can delete it)</p>
 				</div><br>
+				<div class="col-md-2">
+				</div>
+				<div class="col-md-8">
+					<p class="text-center">Are you sure you want to DELETE this row with id "{{row_id}}" from {{lname}} ?<br>
+					This will also delete all entries related to this row!</p>
+					<h4>NOTE: This CANNOT be undone</h4>
 
+					<div class="row">
+						<form action = "{{url_for('DeleteRow', list_id = list_id, row_id = row_id)}}" method = 'POST'>
 
+							
+						{% if deletable_r == true %}
+							<span class = "col-md-5"></span><button type="submit" class="btn btn-primary col-md-3">DELETE ROW FOREVER</button><span class = "col-md-3">
+						{% else %}
+							<div class="popup col-md-2" onclick="myFunction()">
+								<a href="#" class = "btn btn-primary ">DELETE ROW</a><span class = "col-md-4"></span>	
+								<span class="popuptext col-md-3" id="myPopup">Only creators can delete the rows they made, but you can edit the entries.</span>
+							</div>
+						{% endif %}
+
+						</form><br>
+					</div><br>
+					</div>
+				<div class="col-md-2"></div>
+				
 			</div>
 		</div>
 		<div class="col-md-1"></div>
 	</div>
 </div>
+
+
+<!-- THE POINT OF THIS <script> IS FOR THE POPUP ON THE DELETE BUTTONS _ MAKE NEATER LATER-->
+<script>
+// When the user clicks on div, open the popup
+function myFunction() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+}
+</script>
+
+
 {% endblock %}
 
 

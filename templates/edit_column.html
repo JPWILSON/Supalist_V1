@@ -1,6 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- THE POINT OF THIS <style> IS FOR THE POPUP ON THE DELETE BUTTONS _ MAKE NEATER LATER-->
+<style>
+/* Popup container - can be anything you want */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+</style>
+
+
+
+
 <div class = "row" id="content">
 	<div class = "row" id="content">
 		<div class="col-md-1"></div>
@@ -64,17 +127,46 @@
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary col-md-2">Submit Edits</button>
 						<span class = "col-md-2"></span>
-						<a href="{{url_for('DeleteColumn', list_id = list_id, col_id = heading.id)}}" class = "btn btn-primary col-md-4">DELETE COLUMN</a>
+
+
+
+						
+						{% if deletable_h == true %}
+							<a href="{{url_for('DeleteColumn', list_id = list_id, col_id = heading.id)}}" class = "btn btn-primary col-md-4">DELETE COLUMN</a>
+						{% else %}
+							<div class="popup col-md-2" onclick="myFunction()">
+								<a href="#" class = "btn btn-primary ">DELETE COLUMN</a><span class = "col-md-4"></span>	
+								<span class="popuptext col-md-3" id="myPopup">Only creators can delete the headings they made, but you can edit it.</span>
+							</div>
+						{% endif %}
+
+
+
+
+
 						<span class = "col-md-2"></span>
 						<a href="{{url_for('QueryList', list_id = list_id)}}" class = "btn btn-primary col-md-2">CANCEL</a>
 					</div>
+
 				</div>
 			</form>
-			
+			<div class="row">&nbsp </div>
 		</div>
 		<div class="col-md-1"></div>
 	</div>
 </div>
+
+
+<!-- THE POINT OF THIS <script> IS FOR THE POPUP ON THE DELETE BUTTONS _ MAKE NEATER LATER-->
+<script>
+// When the user clicks on div, open the popup
+function myFunction() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+}
+</script>
+
+
 {% endblock %}
 
 
