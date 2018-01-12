@@ -281,6 +281,7 @@ def NewList():
 			newli.l_keywords.append(ListKeyword(keyword = kw3))
 		session.add(newli)
 		session.commit()
+		flash("Well done! You created a new list called: {}".format(newli.name))
 		return redirect(url_for('Home'))
 	else:
 		return render_template('new_list.html', logged_in=logged_in, un=un)
@@ -326,6 +327,7 @@ def EditList(list_id):
 			li_2_edit.l_keywords.append(ListKeyword(keyword = kw2))
 		session.add(li_2_edit)
 		session.commit()
+		flash("Well done! You just edited the following list: {}".format(li_2_edit.name))
 		return redirect(url_for('QueryList', list_id = li_2_edit.id))
 	else:
 		return render_template('edit_list.html', list_id = list_id, lname=li_2_edit, keyword_list=keyword_list
@@ -416,6 +418,7 @@ def DeleteList(list_id):
 
 		session.delete(li_2_del)
 		session.commit()
+		flash("Damn Son! You just deleted the following list: {}".format(li_2_del.name))
 
 
 		return redirect(url_for('Home'))
@@ -491,6 +494,7 @@ def AddColumn(list_id):
 		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to, user=getUser())
 		session.add(newhi)
 		session.commit()
+		flash("Well done! You created a new heading called: {}".format(newhi.name))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name, data_types=data_types, logged_in=logged_in, un=un)
@@ -559,6 +563,7 @@ def EditColumn(list_id, heading_id):
 		heading_2_edit.entry_data_type = request.form['data_type']
 		session.add(heading_2_edit)
 		session.commit()
+		flash("Damn Son! You just edited the heading: {}".format(heading_2_edit.name))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('edit_column.html', list_id = list_id, heading = heading_2_edit, list_name = owning_list.name, 
@@ -592,6 +597,7 @@ def DeleteColumn(list_id, col_id):
 		#Now, delete the actual heading:
 		session.delete(column2del)
 		session.commit()
+		flash("Damn Son! You just deleted the heading: {}".format(column2del.name))
 		return redirect(url_for('QueryList', list_id=list_id))
 	else:
 		return render_template('delete_column.html', li = list2del_col_4rm, 
@@ -620,6 +626,8 @@ def AddRow(list_id):
 			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row, user = getUser())
 			session.add(e1)
 			session.commit()
+
+		flash("Well done! You created a new row with ID: {}.".format(new_row.id))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('add_row.html', list_id = list_id, h_items = heading_items, 
@@ -660,6 +668,8 @@ def EditRow(list_id, row_id):
 				new_ent = e_type(entry = request.form['{}'.format(headings[i].name)],votes=0, heading = headings[i] , lists =row_2_edit)
 				session.add(new_ent)
 				session.commit()
+
+		flash("Well done! You just made some edits to the row with ID: {}".format(row_2_edit.id))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('edit_row.html', li_2_edit = li_2_edit, headings = headings, row_2_edit = row_2_edit, 
@@ -702,7 +712,7 @@ def DeleteRow(list_id, row_id):
 
 		session.delete(row_2_del)
 		session.commit()
-
+		flash("Damn Son! You just deleted the row with ID: {}. Alas it is no more!".format(row_2_del.id))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('delete_row.html', lname = list2del_col_4rm.name, 

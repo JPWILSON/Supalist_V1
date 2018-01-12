@@ -29,7 +29,15 @@
 				</form>
 				
 			</div>
-
+			<div class="row text-center" id=msg_flash>
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						{% for message in messages %}
+							<p>{{ message }}</p>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			</div>
 			<div class="row">
 				<div class="row text-center"><h2>FIND A LIST</h2></div><br>
 					<div class="table table_scroll" id="double_scroll">

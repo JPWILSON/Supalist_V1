@@ -94,6 +94,19 @@
 
 
 	<hr>
+
+	<div class="row text-center" id=msg_flash>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</div>
+
+
+
 	<div class="row">
 		<div class="row text-center"><h2>{{list.name}} <a href="{{url_for('ListDetails', list_id = lid)}}" >(details)</a></h2>
 			{% if logged_in == true %}
