@@ -24,6 +24,19 @@ class User(Base):
 	picture = Column(String(250)) 
 	self_description = Column(String(450), nullable=True)
 
+	@property
+	def serialize(self):
+		#Returns object data in easily serializable format
+		return {
+			'id' : self.id,
+			'user_name' : self.user_name,
+			'firstname' : self.firstname,
+			'lastname' : self.lastname,
+			'email' : self.email,
+			'picture' : self.picture,
+			'description' : self.description,
+		}
+
 #ASSOCIATION TABLES (MANY TO MANY RELS - EG FOR ALL THE KEYWORDS)
 
 #1 FOR LIST KEYWORDS (USE THIS TO SEARCH THE LISTS)
@@ -61,6 +74,16 @@ class List(Base):
 	# many to many List<->Keyword
 	l_keywords = relationship('ListKeyword',secondary=list_keywords,
 		back_populates='lists')
+
+	@property
+	def serialize(self):
+		#Returns object data in easily serializable format
+		return {
+			'id' : self.id,
+			'name' : self.name,
+			'description' : self.description,
+			'votes' : self.votes,
+		}
 
 class ListKeyword(Base):
 	__tablename__ = 'l_keywords'

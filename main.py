@@ -221,6 +221,16 @@ def Home():
 	else:
 		return render_template('homepage.html', all_lists = all_lists, lists_and_headings = lists_and_headings, logged_in=logged_in, un=un)
 
+#Making an API Enpoint (GET Request)
+@app.route('/home/JSON')
+def allListsJSON():
+	all_lists = session.query(List).order_by(List.name).all()
+	lists_and_headings = {}    
+	for li in all_lists:
+		lists_and_headings[li] = session.query(HeadingItem).filter_by(list_id = li.id).all()
+	return jsonify(Lists = [i.serialize for i in all_lists])
+
+
 @app.route('/results/<string:search_str>/', methods = ['GET', 'POST'])
 def Result(search_str):
 
