@@ -3,16 +3,16 @@ import sys
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, Date
 from sqlalchemy import Table, Text, DateTime, Time, Interval
 from sqlalchemy import BLOB, Numeric, Boolean, Float
-
+from sqlalchemy.dialects import postgresql
 
 
 #useful reference:
 #	http://docs.sqlalchemy.org/en/rel_1_1/orm/tutorial.html
 Base = declarative_base()
-
+'''
 class User(Base):
 	__tablename__ = 'usery'
 
@@ -23,6 +23,30 @@ class User(Base):
 	email = Column(String(45), nullable=False)
 	picture = Column(String(250)) 
 	self_description = Column(String(450), nullable=True)
+
+	@property
+	def serialize(self):
+		#Returns object data in easily serializable format
+		return {
+			'id' : self.id,
+			'user_name' : self.user_name,
+			'firstname' : self.firstname,
+			'lastname' : self.lastname,
+			'email' : self.email,
+			'picture' : self.picture,
+			'description' : self.description,
+		}
+'''
+class User(Base):
+	__tablename__ = 'usery'
+
+	id = Column(Integer, primary_key = True)
+	user_name = Column(Text, nullable=False, unique = True)
+	firstname = Column(Text, nullable=True)
+	lastname = Column(Text, nullable=True)
+	email = Column(Text, nullable=False)
+	picture = Column(Text) 
+	self_description = Column(Text, nullable=True)
 
 	@property
 	def serialize(self):
@@ -65,8 +89,8 @@ class List(Base):
 	__tablename__ = 'lists'
 
 	id = Column(Integer, primary_key=True)
-	name = Column(String(25), nullable=False)
-	description = Column(String(250), nullable=True)
+	name = Column(Text, nullable=False)
+	description = Column(Text, nullable=True)
 	votes = Column(Integer, nullable = True)
 	user_id = Column(Integer, ForeignKey('usery.id'))
 	user = relationship(User)
@@ -89,7 +113,7 @@ class ListKeyword(Base):
 	__tablename__ = 'l_keywords'
 
 	id = Column(Integer, primary_key = True)
-	keyword = Column(String(50), nullable = False)
+	keyword = Column(Text, nullable = False)
 	
 	# many to many List<->Keyword
 	lists = relationship('List', secondary=list_keywords, back_populates='l_keywords')
@@ -98,8 +122,8 @@ class HeadingItem(Base):
 	__tablename__ = 'heading'
 
 	id = Column(Integer, primary_key=True)
-	name = Column(String(25), nullable = False)
-	description = Column(String(250), nullable=True)
+	name = Column(Text, nullable = False)
+	description = Column(Text, nullable=True)
 	entry_data_type = Column(Integer, nullable = False)
 	votes = Column(Integer, nullable = True)
 	list_id = Column(Integer, ForeignKey('lists.id'))
@@ -124,11 +148,27 @@ class Row(Base):
 
 # formats can be found at: https://www.w3schools.com/sql/sql_datatypes.asp
 #This is for names, titles, nouns, locations, urls, adjectives, etc 
-class ShortTextEntry(Base):
+class TextEntry(Base):
 	__tablename__ = 'short_text'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(String(50), nullable = False)
+	entry = Column(Text, nullable = False)
+	votes = Column(Integer, nullable = True)
+
+	heading_id = Column(Integer, ForeignKey('heading.id'))
+	heading = relationship(HeadingItem)
+	row_id = Column(Integer, ForeignKey('row.id'))
+	lists = relationship(Row)
+
+	user_id = Column(Integer, ForeignKey('usery.id'))
+	user = relationship(User)
+
+
+class IntegerEntry(Base):
+	__tablename__ = 'integer'
+
+	id = Column(Integer, primary_key=True) 
+	entry = Column(Integer, nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -140,11 +180,12 @@ class ShortTextEntry(Base):
 	user = relationship(User)
 
 # This is for descriptions, long addresses, etc 
+"""
 class LongTextEntry(Base):
 	__tablename__ = 'long_text'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(String(1000), nullable = False)
+	entry = Column(Text, nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -153,7 +194,7 @@ class LongTextEntry(Base):
 	lists = relationship(Row)
 
 	user_id = Column(Integer, ForeignKey('usery.id'))
-	user = relationship(User)
+	user = relationship(User)"""
 
 # This is for birthdays, or any date that needs to be entered 
 
@@ -161,7 +202,7 @@ class DateEntry(Base):
 	__tablename__ = 'date'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Date, nullable = False)
+	entry = Column(Date(), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -190,7 +231,7 @@ class DateTimeEntry(Base):
 	user = relationship(User)
 
 # Boolean
-class Bools(Base):
+class TrueFalse(Base):
 	__tablename__ = 'bools'
 
 	id = Column(Integer, primary_key=True) 
@@ -210,7 +251,7 @@ class TimeEntry(Base):
 	__tablename__ = 'time'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Time, nullable = False)
+	entry = Column(Time(), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -228,7 +269,7 @@ class Duration(Base):
 	__tablename__ = 'duration'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Interval, nullable = False)
+	entry = Column(Interval(), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))

@@ -3,8 +3,8 @@ from flask import Flask, render_template, request, url_for, redirect, flash, jso
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, list_keywords, List, ListKeyword, HeadingItem
-from database_setup import Row, ShortTextEntry, LongTextEntry, DateEntry, DateTimeEntry 
-from database_setup import Bools, TimeEntry, Duration, TwoDecimal, LargeDecimal
+from database_setup import Row, TextEntry, DateEntry, DateTimeEntry, IntegerEntry 
+from database_setup import TrueFalse, TimeEntry, Duration, TwoDecimal, LargeDecimal
 
 
 #Oauth for google steps: 
@@ -35,14 +35,14 @@ APPLICATION_NAME = "Supalist_V1"
 
 
 
-user1 = session.query(User).first()
+#user1 = session.query(User).first()
 #This is for when I need to access the different data types: 
-li_of_dtypes = [ShortTextEntry,LongTextEntry,DateEntry,DateTimeEntry,Bools,TimeEntry,Duration,TwoDecimal,LargeDecimal]
+li_of_dtypes = [TextEntry,IntegerEntry,DateEntry,DateTimeEntry,TrueFalse,TimeEntry,Duration,TwoDecimal,LargeDecimal]
 data_types ={}
 for i in range(0,9):
 	data_types[i] = li_of_dtypes[i]
 #This is for when I need to access the TEXT (strings) of the different data types: 
-li_of_dtypes_str = ["Short Text","Long Text","Date","Date & Time","True/False","Time","Duration","Two Decimal","Large Decimal"]
+li_of_dtypes_str = ["Text","Integer","Date","Date & Time","True/False","Time","Duration","Two Decimal","Large Decimal"]
 data_types_str ={}
 for i in range(0,9):
 	data_types_str[i] = li_of_dtypes_str[i]
@@ -362,62 +362,16 @@ def DeleteList(list_id):
 	if request.method == 'POST':
 		#Delete all keywords associated to this list (then entries, then headings, then rows, FINALLY, lists!) :
 		li_2_del.l_keywords = []
+
+		#Delete entries from each of the different data type tables: 
 		for row in rows_2_del:
-			e_2_del1 = session.query(ShortTextEntry).filter_by(row_id = row.id).all()
-			if len(e_2_del1) > 0:
-				for w in e_2_del1:
-					session.delete(w)
-					session.commit()
+			for i in range(0,len(li_of_dtypes)):
+				e_2_del = session.query(li_of_dtypes[i]).filter_by(row_id = row.id).all()
+				if len(e_2_del) > 0:
+					for w in e_2_del:
+						session.delete(w)
+						session.commit()
 
-			e_2_del2 = session.query(LongTextEntry).filter_by(row_id = row.id).all()
-			if len(e_2_del2) > 0:
-				for w in e_2_del2:
-					session.delete(w)
-					session.commit()
-
-			e_2_del3 = session.query(DateEntry).filter_by(row_id = row.id).all()
-			if len(e_2_del3) > 0:
-				for w in e_2_del3:
-					session.delete(w)
-					session.commit()
-
-			e_2_del4 = session.query(Bools).filter_by(row_id = row.id).all()
-			if len(e_2_del4) > 0:
-				for w in e_2_del4:
-					session.delete(w)
-					session.commit()
-
-			e_2_del5 = session.query(TimeEntry).filter_by(row_id = row.id).all()
-			if len(e_2_del5) > 0:
-				for w in e_2_del5:
-					session.delete(w)
-					session.commit()
-
-			e_2_del6 = session.query(Duration).filter_by(row_id = row.id).all()
-			if len(e_2_del6) > 0:
-				for w in e_2_del6:
-					session.delete(w)
-					session.commit()
-
-			e_2_del7 = session.query(TwoDecimal).filter_by(row_id = row.id).all()
-			if len(e_2_del7) > 0:
-				for w in e_2_del7:
-					session.delete(w)
-					session.commit()
-
-			e_2_del8 = session.query(LargeDecimal).filter_by(row_id = row.id).all()
-			if len(e_2_del8) > 0:
-				for w in e_2_del8:
-					session.delete(w)
-					session.commit()
-
-			e_2_del9 = session.query(DateTimeEntry).filter_by(row_id = row.id).all()
-			if len(e_2_del9) > 0:
-				for w in e_2_del9:
-					session.delete(w)
-					session.commit()
-
-			#Lastly, delete every row
 		for heading in headings2del:
 			session.delete(heading)
 			session.commit()
@@ -465,14 +419,14 @@ def QueryList(list_id):
 
 	# Need to collect data entries for each of the different types of entries that are available
 	for row in rows:
-		row_entries[row.id] = session.query(ShortTextEntry).filter_by(row_id = row.id).order_by(ShortTextEntry.heading_id).all()
-		for i in (session.query(LongTextEntry).filter_by(row_id = row.id).all()):
+		row_entries[row.id] = session.query(TextEntry).filter_by(row_id = row.id).order_by(TextEntry.heading_id).all()
+		for i in (session.query(IntegerEntry).filter_by(row_id = row.id).all()):
 			row_entries[row.id].append(i)
 		for i in (session.query(DateEntry).filter_by(row_id = row.id).all()):
 			row_entries[row.id].append(i)
 		for i in (session.query(DateTimeEntry).filter_by(row_id = row.id).all()):
 				row_entries[row.id].append(i)
-		for i in (session.query(Bools).filter_by(row_id = row.id).all()):
+		for i in (session.query(TrueFalse).filter_by(row_id = row.id).all()):
 				row_entries[row.id].append(i)
 		for i in (session.query(TimeEntry).filter_by(row_id = row.id).all()):
 				row_entries[row.id].append(i)
@@ -498,7 +452,7 @@ def AddColumn(list_id):
 		logged_in = True
 		un = login_session['username']
 
-	data_types = [(0, 'ShortTextEntry'),(1,'LongTextEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'Bools'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
+	data_types = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'TrueFalse'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	if request.method == 'POST':
 		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to, user=getUser())
@@ -555,7 +509,7 @@ def EditColumn(list_id, heading_id):
 
 	owning_list = session.query(List).filter_by(id = list_id).one()
 	heading_2_edit = session.query(HeadingItem).filter_by(id = heading_id).one()
-	data_type_dict = {0: "ShortTextEntry", 1: "LongTextEntry", 2: "DateEntry", 3: "DateTimeEntry", 4: "Bools",
+	data_type_dict = {0: "TextEntry", 1: "IntegerEntry", 2: "DateEntry", 3: "DateTimeEntry", 4: "TrueFalse",
 	 5: "TimeEntry", 6: "Duration", 7: "TwoDecimal", 8: "LargeDecimal"}
 
 	#Defining the logic determining creator of item (only person allowed to delete)
@@ -868,3 +822,69 @@ if __name__ == '__main__':
 	app.secret_key = 'super_secret_key'
 	app.debug = True
 	app.run(host = '0.0.0.0', port = 5000)
+
+
+
+
+
+#Redundant - for deleting lists:
+
+
+
+'''
+		for row in rows_2_del:
+			e_2_del1 = session.query(TextEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del1) > 0:
+				for w in e_2_del1:
+					session.delete(w)
+					session.commit()
+
+			e_2_del2 = session.query(IntegerEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del2) > 0:
+				for w in e_2_del2:
+					session.delete(w)
+					session.commit()
+
+			e_2_del3 = session.query(DateEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del3) > 0:
+				for w in e_2_del3:
+					session.delete(w)
+					session.commit()
+
+			e_2_del4 = session.query(TrueFalse).filter_by(row_id = row.id).all()
+			if len(e_2_del4) > 0:
+				for w in e_2_del4:
+					session.delete(w)
+					session.commit()
+
+			e_2_del5 = session.query(TimeEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del5) > 0:
+				for w in e_2_del5:
+					session.delete(w)
+					session.commit()
+
+			e_2_del6 = session.query(Duration).filter_by(row_id = row.id).all()
+			if len(e_2_del6) > 0:
+				for w in e_2_del6:
+					session.delete(w)
+					session.commit()
+
+			e_2_del7 = session.query(TwoDecimal).filter_by(row_id = row.id).all()
+			if len(e_2_del7) > 0:
+				for w in e_2_del7:
+					session.delete(w)
+					session.commit()
+
+			e_2_del8 = session.query(LargeDecimal).filter_by(row_id = row.id).all()
+			if len(e_2_del8) > 0:
+				for w in e_2_del8:
+					session.delete(w)
+					session.commit()
+
+			e_2_del9 = session.query(DateTimeEntry).filter_by(row_id = row.id).all()
+			if len(e_2_del9) > 0:
+				for w in e_2_del9:
+					session.delete(w)
+					session.commit()
+'''
+			#Lastly, delete every row

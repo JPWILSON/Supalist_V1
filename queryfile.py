@@ -1,13 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, list_keywords, List, ListKeyword, HeadingItem
-from database_setup import Row, ShortTextEntry, LongTextEntry, DateEntry, DateTimeEntry 
-from database_setup import Bools, TimeEntry, Duration, TwoDecimal, LargeDecimal
+from database_setup import Row, TextEntry, DateEntry, DateTimeEntry, IntegerEntry 
+from database_setup import TrueFalse, TimeEntry, Duration, TwoDecimal, LargeDecimal
 
 engine = create_engine('postgresql+psycopg2://catalog:db-password@localhost/supalist1')
 Base.metadata.bind = engine 
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
+
+print"About to start"
+arr = [1,'gff', 'sdf','sd', 4,5,6,90]
+for i in range(0, len(arr)):
+	print i, arr[i]
+print "Done", len(arr)
 
 """
 
@@ -36,7 +42,7 @@ for i in li_headings:
 
 
 print "DONE!"
-"""
+
 
 li = session.query(List).all()
 li3 = li[0]
@@ -108,3 +114,5 @@ for i in range(1, len(heading_items)+1):
 	print data_types[heading_items[i-1].entry_data_type], "WOHHAHAHA"
 print len(heading_items)
 print "Now done!"
+
+"""
