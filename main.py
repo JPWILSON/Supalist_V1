@@ -42,10 +42,13 @@ data_types ={}
 for i in range(0,9):
 	data_types[i] = li_of_dtypes[i]
 #This is for when I need to access the TEXT (strings) of the different data types: 
-li_of_dtypes_str = ["Text","Integer","Date","Date & Time","True/False","Time","Duration","Two Decimal","Large Decimal"]
+li_of_dtypes_str = ["TextEntry","IntegerEntry","DateEntry","DateTimeEntry","TrueFalse","TimeEntry","Duration","TwoDecimal","LargeDecimal"]
 data_types_str ={}
 for i in range(0,9):
 	data_types_str[i] = li_of_dtypes_str[i]
+
+
+data_types_tuple = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'TrueFalse'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
 
 
 
@@ -416,25 +419,10 @@ def QueryList(list_id):
 	if owner.user_name == un:
 		deletable_l = True
 
-
-	# Need to collect data entries for each of the different types of entries that are available
 	for row in rows:
 		row_entries[row.id] = session.query(TextEntry).filter_by(row_id = row.id).order_by(TextEntry.heading_id).all()
-		for i in (session.query(IntegerEntry).filter_by(row_id = row.id).all()):
-			row_entries[row.id].append(i)
-		for i in (session.query(DateEntry).filter_by(row_id = row.id).all()):
-			row_entries[row.id].append(i)
-		for i in (session.query(DateTimeEntry).filter_by(row_id = row.id).all()):
-				row_entries[row.id].append(i)
-		for i in (session.query(TrueFalse).filter_by(row_id = row.id).all()):
-				row_entries[row.id].append(i)
-		for i in (session.query(TimeEntry).filter_by(row_id = row.id).all()):
-				row_entries[row.id].append(i)
-		for i in (session.query(Duration).filter_by(row_id = row.id).all()):
-				row_entries[row.id].append(i)
-		for i in (session.query(TwoDecimal).filter_by(row_id = row.id).all()):
-				row_entries[row.id].append(i)
-		for i in (session.query(LargeDecimal).filter_by(row_id = row.id).all()):
+		for e in li_of_dtypes[1:]:
+			for i in (session.query(e).filter_by(row_id = row.id).all()):
 				row_entries[row.id].append(i)
 		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
 	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, 
@@ -452,7 +440,6 @@ def AddColumn(list_id):
 		logged_in = True
 		un = login_session['username']
 
-	data_types = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'TrueFalse'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	if request.method == 'POST':
 		newhi = HeadingItem(name=request.form['namer'], description=request.form['desc'], entry_data_type = request.form['data_type'], votes=0, lists= list_to_add_to, user=getUser())
@@ -461,7 +448,7 @@ def AddColumn(list_id):
 		flash("Well done! You created a new heading called: {}".format(newhi.name))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
-		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name, data_types=data_types, logged_in=logged_in, un=un)
+		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name, data_types=data_types_tuple, logged_in=logged_in, un=un)
 		"""
 	kw1 = request.form['kw1']
 	if kw1 != None:
@@ -577,6 +564,8 @@ def AddRow(list_id):
 		logged_in = True
 		un = login_session['username']
 
+	#List of tuples of data types
+
 	list_to_add_to = session.query(List).filter_by(id=list_id).one()
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_id).order_by(HeadingItem.id.asc()).all()
 	if request.method == 'POST':
@@ -584,17 +573,17 @@ def AddRow(list_id):
 		session.add(new_row)
 		session.commit()
 
-		for i in range(1, len(heading_items)+1):
+		for i in range(0, len(heading_items)):
 			form_val = request.form["name_{}".format(i)]
-			stri = data_types[heading_items[i-1].entry_data_type]
-			e1 = stri(entry=form_val, votes=0, heading = heading_items[i-1] , lists =new_row, user = getUser())
+			stri = data_types[heading_items[i].entry_data_type]
+			e1 = stri(entry=form_val, votes=0, heading = heading_items[i] , lists =new_row, user = getUser())
 			session.add(e1)
 			session.commit()
 
 		flash("Well done! You created a new row with ID: {}.".format(new_row.id))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
-		return render_template('add_row.html', list_id = list_id, h_items = heading_items, 
+		return render_template('add_row.html', list_id = list_id, h_items = heading_items, dt_tr = data_types_str,
 			list = list_to_add_to, logged_in=logged_in, un=un)
 	#return "Add a new row to your list. That is, a new entry (and therefore increase the usefulness of your list with id: {}). ".format(list_id)
 
@@ -828,9 +817,6 @@ if __name__ == '__main__':
 
 
 #Redundant - for deleting lists:
-
-
-
 '''
 		for row in rows_2_del:
 			e_2_del1 = session.query(TextEntry).filter_by(row_id = row.id).all()
@@ -888,3 +874,26 @@ if __name__ == '__main__':
 					session.commit()
 '''
 			#Lastly, delete every row
+
+
+'''
+Also Redundants - This is how each of the entries was added to each row for the display of a list (QueryList): 
+	# Need to collect data entries for each of the different types of entries that are available
+	for row in rows:
+		row_entries[row.id] = session.query(TextEntry).filter_by(row_id = row.id).order_by(TextEntry.heading_id).all()
+		for i in (session.query(IntegerEntry).filter_by(row_id = row.id).all()):
+			row_entries[row.id].append(i)
+		for i in (session.query(DateEntry).filter_by(row_id = row.id).all()):
+			row_entries[row.id].append(i)
+		for i in (session.query(DateTimeEntry).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(TrueFalse).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(TimeEntry).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(Duration).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(TwoDecimal).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)
+		for i in (session.query(LargeDecimal).filter_by(row_id = row.id).all()):
+				row_entries[row.id].append(i)'''

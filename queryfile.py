@@ -11,10 +11,12 @@ session = DBSession()
 
 print"About to start"
 arr = [1,'gff', 'sdf','sd', 4,5,6,90]
-for i in range(0, len(arr)):
-	print i, arr[i]
-print "Done", len(arr)
-
+for e in arr:
+	print e
+print "Done", '\n'
+for e in arr[1:]:
+	print e
+print "Done again", '\n'
 """
 
 li = session.query(List).all()

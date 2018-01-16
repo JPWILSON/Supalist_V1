@@ -18,11 +18,28 @@
 
 			<form action = "{{url_for('AddRow', list_id = list_id)}}" method = 'POST'>
 					<tbody>
-						<tr>{% for i in range(1, (h_items|length + 1)) %}		
+						<tr>{% for i in range(0, (h_items|length)) %}		
 							<td>
 								<div class="form-group">
-								<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i-1].name}} and {{i}}">
-								<!-- <span class = "col-md-1"></span> -->
+								<!-- 
+								<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].name}} and {{h_items[i].entry_data_type}}">
+								 <span class = "col-md-1"></span> -->
+								{% if (h_items[i].entry_data_type == 2)  %}
+									<input type="date" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
+								{% elif (h_items[i].entry_data_type == 3) %}
+									<input type="datetime-local" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
+								{% elif (h_items[i].entry_data_type == 5) %}
+									<input type="time" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
+								{% elif (h_items[i].entry_data_type == 6) %}
+									<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">									
+								{% elif (h_items[i].entry_data_type == 1) or (h_items[i].entry_data_type == 7) or (h_items[i].entry_data_type == 8) %}
+									<input type="number" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Input a number">
+								{% elif (h_items[i].entry_data_type == 4) %}
+									<label>Female</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = true>
+									<label>Male</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = false>	
+								{% else %}
+									<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
+								{% endif %}
 								</div>
 							</td>
 							{% endfor %}
