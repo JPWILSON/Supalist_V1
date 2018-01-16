@@ -617,7 +617,7 @@ def EditRow(list_id, row_id):
 				session.add(entries[i][1])
 				session.commit()
 			else:
-				e_type = li_of_dtypes[headings[i].entry_data_type]
+				e_type = li_of_dtypes[headings[i].entry_data_type] #This section is for entries that are blank but there is a heading for them... 
 				new_ent = e_type(entry = request.form['{}'.format(headings[i].name)],votes=0, heading = headings[i] , lists =row_2_edit)
 				session.add(new_ent)
 				session.commit()
