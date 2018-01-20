@@ -26,17 +26,20 @@
 								 <span class = "col-md-1"></span> -->
 								{% if (h_items[i].entry_data_type == 2)  %}
 									<input type="date" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
-								{% elif (h_items[i].entry_data_type == 3) %}
-									<input type="datetime-local" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
-								{% elif (h_items[i].entry_data_type == 5) %}
-									<input type="time" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
-								{% elif (h_items[i].entry_data_type == 6) %}
-									<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">									
-								{% elif (h_items[i].entry_data_type == 1) or (h_items[i].entry_data_type == 7) or (h_items[i].entry_data_type == 8) %}
-									<input type="number" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Input a number">
+
 								{% elif (h_items[i].entry_data_type == 4) %}
-									<label>True/ Yes</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = true>
-									<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = false>	
+									<input type="time" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
+								{% elif (h_items[i].entry_data_type == 5) %}
+									<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">									
+								{% elif (h_items[i].entry_data_type == 1) or (h_items[i].entry_data_type == 6) or (h_items[i].entry_data_type == 7) %}
+									<input type="number" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Input a number">
+								{% elif (h_items[i].entry_data_type == 3) %}
+									<!--<select>
+										<option value = "true">{{h_items[i].name}}</option>
+										<option value = "false">NOT {{h_items[i].name}}</option>
+									</select>	-->
+									<label>True/ Yes (Default) </label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = "true" checked>
+									<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" value = "false">
 								{% else %}
 									<input type="text" class="form-control" id="exampleInputEmail1" name = "name_{{i}}" placeholder="Value for {{h_items[i].entry_data_type}} and {{dt_tr[h_items[i].entry_data_type]}}">
 								{% endif %}

@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
 
+from datetime import datetime
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, list_keywords, List, ListKeyword, HeadingItem
@@ -37,19 +39,19 @@ APPLICATION_NAME = "Supalist_V1"
 
 #user1 = session.query(User).first()
 #This is for when I need to access the different data types: 
-li_of_dtypes = [TextEntry,IntegerEntry,DateEntry,DateTimeEntry,TrueFalse,TimeEntry,Duration,TwoDecimal,LargeDecimal]
+li_of_dtypes = [TextEntry,IntegerEntry,DateEntry,TrueFalse,TimeEntry,Duration,TwoDecimal,LargeDecimal]
 data_types ={}
-for i in range(0,9):
+for i in range(0,8):
 	data_types[i] = li_of_dtypes[i]
 #This is for when I need to access the TEXT (strings) of the different data types: 
-li_of_dtypes_str = ["TextEntry","IntegerEntry","DateEntry","DateTimeEntry","TrueFalse","TimeEntry","Duration","TwoDecimal","LargeDecimal"]
+li_of_dtypes_str = ["TextEntry","IntegerEntry","DateEntry","TrueFalse","TimeEntry","Duration","TwoDecimal","LargeDecimal"]
 data_types_str ={}
-for i in range(0,9):
+for i in range(0,8):
 	data_types_str[i] = li_of_dtypes_str[i]
 
 
-data_types_tuple = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'DateTimeEntry'),(4,'TrueFalse'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
-
+#data_types_tuple = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'DateEntry'),(4,'TrueFalse'),(5,'TimeEntry'),(6, 'Duration'),(7,'TwoDecimal'),(8,'LargeDecimal')]
+data_types_tuple = [(0, 'TextEntry'),(1,'IntegerEntry'),(2,'DateEntry'),(3,'TrueFalse'),(4,'TimeEntry'),(5, 'Duration'),(6,'TwoDecimal'),(7,'LargeDecimal')]
 
 
 
@@ -412,10 +414,11 @@ def QueryList(list_id):
 	row_entries = {}
 
 	#Defining the logic determining creator of item (only person allowed to delete)
-	owner = list_to_view.user
+	owner_id = list_to_view.user_id
 	deletable_l = False # This is val passed to template about wether delete button (for lists) will do what's required or popup saying not allowed 
 	# to delete because not creator of ths thing (list, heading, row, entry)
 	#print "OWNER IS: ",owner.user_name, "un is: ", un
+	owner = session.query(User).filter_by(id = owner_id).one()
 	if owner.user_name == un:
 		deletable_l = True
 
@@ -496,8 +499,8 @@ def EditColumn(list_id, heading_id):
 
 	owning_list = session.query(List).filter_by(id = list_id).one()
 	heading_2_edit = session.query(HeadingItem).filter_by(id = heading_id).one()
-	data_type_dict = {0: "TextEntry", 1: "IntegerEntry", 2: "DateEntry", 3: "DateTimeEntry", 4: "TrueFalse",
-	 5: "TimeEntry", 6: "Duration", 7: "TwoDecimal", 8: "LargeDecimal"}
+	data_type_dict = {0: "TextEntry", 1: "IntegerEntry", 2: "DateEntry", 3: "TrueFalse",
+	 4: "TimeEntry", 5: "Duration", 6: "TwoDecimal", 7: "LargeDecimal"}
 
 	#Defining the logic determining creator of item (only person allowed to delete)
 	owner = heading_2_edit.user
@@ -572,14 +575,28 @@ def AddRow(list_id):
 		new_row = Row(votes = 0, lists = list_to_add_to, user = getUser())
 		session.add(new_row)
 		session.commit()
-
 		for i in range(0, len(heading_items)):
+
 			form_val = request.form["name_{}".format(i)]
 			stri = data_types[heading_items[i].entry_data_type]
+			print str(stri)[-11:-2], form_val
+			if str(stri)[-11:-2] == "DateEntry":
+				print "True"
+				if len(form_val) < 1 or str(form_val)[4] != "-" or form_val== '':
+					form_val = datetime.strptime('0001-01-01' , '%Y-%m-%d')
+			elif str(stri)[-11:-2] == "egerEntry" or  str(stri)[-11:-2] == "woDecimal" or str(stri)[-11:-2] == "geDecimal":
+				print "This is a default value added for a number entry that was left blank ", form_val, str(stri)[-11:-2]
+				form_val = 0
+				print form_val
+			print "new form val: ", form_val
 			e1 = stri(entry=form_val, votes=0, heading = heading_items[i] , lists =new_row, user = getUser())
 			session.add(e1)
 			session.commit()
-
+			#inputa = str(stri)[-11:-2]  This is the start of how we would do form validation.... 
+			#if (inputa == 'DateEntry' and form_val[4] == '-'):
+			#	print True
+			#else:
+			#	print False
 		flash("Well done! You created a new row with ID: {}.".format(new_row.id))
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:

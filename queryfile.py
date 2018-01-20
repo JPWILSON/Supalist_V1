@@ -9,14 +9,11 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
-print"About to start"
-arr = [1,'gff', 'sdf','sd', 4,5,6,90]
-for e in arr:
-	print e
-print "Done", '\n'
-for e in arr[1:]:
-	print e
-print "Done again", '\n'
+di = []
+a = str(di)
+st = "This is a string"
+print "Ffg is a type for the string of the var name for the dict, type for dict, type for the string"
+print type(a), type(di), type(st)
 """
 
 li = session.query(List).all()

@@ -25,17 +25,22 @@
 
 								{% if (headings[e].entry_data_type == 2)  %}
 									<input type="date" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
-								{% elif (headings[e].entry_data_type == 3) %}<label>Date & Time</label>
-									<input type="datetime-local" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value={{entries[e][1].entry}}>
-								{% elif (headings[e].entry_data_type == 5) %}
-									<input type="time" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
-								{% elif (headings[e].entry_data_type == 6) %}
-									<input type="text" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">									
-								{% elif (headings[e].entry_data_type == 1) or (headings[e].entry_data_type == 7) or (headings[e].entry_data_type == 8) %}
-									<input type="number" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
 								{% elif (headings[e].entry_data_type == 4) %}
-									<label>True/ Yes</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "{{entries[e][1].entry}}">
-									<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "{{entries[e][1].entry}}">	
+									<input type="time" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
+								{% elif (headings[e].entry_data_type == 5) %}
+									<input type="text" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">									
+								{% elif (headings[e].entry_data_type == 1) or (headings[e].entry_data_type == 6) or (headings[e].entry_data_type == 7) %}
+									<input type="number" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
+								{% elif (headings[e].entry_data_type == 3) %}
+								<!-- This is how I will be able to keep the correct item checked when editing: --> 
+									{% if entries[e][1].entry == True %}
+										<label>True/ Yes </label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "True" checked>
+										<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "False">
+										<!--<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "{{entries[e][1].entry}}" checked>	-->
+									{% else %}
+										<label>True/ Yes </label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "True" >
+										<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value = "False" checked>
+									{% endif %}
 								{% else %}
 									<input type="text" class="form-control" id="exampleInputEmail1" name = "h_{{headings[e].name}}" value="{{entries[e][1].entry}}">
 								{% endif %}								
@@ -51,16 +56,14 @@
 
 								{% if (headings[e].entry_data_type == 2)  %}
 									<input type="date" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >
-								{% elif (headings[e].entry_data_type == 3) %}
-									<input type="datetime-local" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >
-								{% elif (headings[e].entry_data_type == 5) %}
-									<input type="time" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >
-								{% elif (headings[e].entry_data_type == 6) %}
-									<input type="text" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >									
-								{% elif (headings[e].entry_data_type == 1) or (headings[e].entry_data_type == 7) or (headings[e].entry_data_type == 8) %}
-									<input type="number" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" placeholder="Input a number">
 								{% elif (headings[e].entry_data_type == 4) %}
-									<label>True/ Yes</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" value = true>
+									<input type="time" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >
+								{% elif (headings[e].entry_data_type == 5) %}
+									<input type="text" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >									
+								{% elif (headings[e].entry_data_type == 1) or (headings[e].entry_data_type == 6) or (headings[e].entry_data_type == 7) %}
+									<input type="number" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" placeholder="Input a number">
+								{% elif (headings[e].entry_data_type == 3) %}
+									<label></label><input type="radio" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" value = true>
 									<label>False/ No</label><input type="radio" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" value = false>	
 								{% else %}
 									<input type="text" class="form-control" id="exampleInputEmail1" name = "{{headings[e].name}}" >
