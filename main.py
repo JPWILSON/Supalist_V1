@@ -155,7 +155,7 @@ def gconnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    #print "done!"
     return output
 
     # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -169,15 +169,15 @@ def gdisconnect():
         response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
+    #print 'In gdisconnect access token is %s', access_token
+    #print 'User name is: '
+    #print login_session['username']
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-    print "url: ", url 
+    #print "url: ", url 
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result type:', type(result) , 'result is '
-    print result
+    #print 'result type:', type(result) , 'result is '
+    #print result
     #if result['status'] == '200':
     if result['status'] == '200' or ('must-revalidate' in result['cache-control']):
         del login_session['access_token']
@@ -503,7 +503,7 @@ def EditColumn(list_id, heading_id):
 	 4: "TimeEntry", 5: "Duration", 6: "TwoDecimal", 7: "LargeDecimal"}
 
 	orig_hdng_dtype = heading_2_edit.entry_data_type
-	print "before edit, this is dtype (num, word): ", orig_hdng_dtype, data_type_dict[orig_hdng_dtype]
+	#print "before edit, this is dtype (num, word): ", orig_hdng_dtype, data_type_dict[orig_hdng_dtype]
 
 	#Defining the logic determining creator of item (only person allowed to delete)
 	owner = heading_2_edit.user
@@ -512,13 +512,13 @@ def EditColumn(list_id, heading_id):
 	#print "OWNER IS: ",owner.user_name, "un is: ", un
 	if owner.user_name == un:
 		deletable_h = True
-	print deletable_h
+	#print deletable_h
 
 	if request.method == 'POST':
 		heading_2_edit.name = request.form['namer']
 		heading_2_edit.description = request.form['desc']
 		#heading_2_edit.entry_data_type = request.form['data_type'] -see paragraph below, cannot edit the data type. 
-		print "New dataType: ", heading_2_edit.entry_data_type
+		#print "New dataType: ", heading_2_edit.entry_data_type
 		session.add(heading_2_edit)
 		session.commit()
 
@@ -599,22 +599,22 @@ def AddRow(list_id):
 
 			form_val = request.form["name_{}".format(i)]
 			stri = data_types[heading_items[i].entry_data_type]
-			print str(stri)[-11:-2], form_val
+			#print str(stri)[-11:-2], form_val
 			if str(stri)[-11:-2] == "DateEntry":
-				print "True"
+				#print "True"
 				if len(form_val) < 1 or str(form_val)[4] != "-" or form_val== '':
 					form_val = datetime.strptime('0001-01-01' , '%Y-%m-%d')
 			elif str(stri)[-11:-2] == "egerEntry" or  str(stri)[-11:-2] == "woDecimal" or str(stri)[-11:-2] == "geDecimal":
-				print "This is a default value added for a number entry that was left blank ", form_val, str(stri)[-11:-2]
+				#print "This is a default value added for a number entry that was left blank ", form_val, str(stri)[-11:-2]
 				form_val = 0
-				print form_val
+				#print form_val
 			elif str(stri)[-11:-2] == "TextEntry":
 				if type(form_val) != str:
-					print "Form val type: ", type(form_val)
+					#print "Form val type: ", type(form_val)
 					form_val = str(form_val)
-					print "Form val type: ", type(form_val)
+					#print "Form val type: ", type(form_val)
 
-			print "new form val: ", form_val
+			#print "new form val: ", form_val
 			e1 = stri(entry=form_val, votes=0, heading = heading_items[i] , lists =new_row, user = getUser())
 			session.add(e1)
 			session.commit()
@@ -657,6 +657,16 @@ def EditRow(list_id, row_id):
 			if i < len(entries):
 				namer = str(headings[i].name)
 				entries[i][1].entry = request.form["h_{}".format(namer)]
+				dtype_A = data_types[headings[i].entry_data_type]
+				#print "namer is: ", namer, "This is the data type: ",data_types[headings[i].entry_data_type], dtype_A, "Main part: ",str(dtype_A)[-11:-2]
+				if str(dtype_A)[-11:-2] == "egerEntry":
+					if type(entries[i][1].entry) != int:
+						entries[i][1].entry = 0
+					#if entries[i][1].entry == '' or entries[i][1].entry == ' ':
+				elif str(dtype_A)[-11:-2] == "woDecimal" or str(dtype_A)[-11:-2] == "geDecimal":
+					if entries[i][1].entry == '' or entries[i][1].entry == ' ':
+						entries[i][1].entry = 0.00
+				#data_types[i]
 				session.add(entries[i][1])
 				session.commit()
 			else:
@@ -692,7 +702,7 @@ def DeleteRow(list_id, row_id):
 	#print "OWNER IS: ",owner.user_name, "un is: ", un
 	if owner.user_name == un:
 		deletable_r = True
-	print deletable_r
+	#print deletable_r
 
 
 	entries_2_del = []

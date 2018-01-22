@@ -168,7 +168,7 @@ class IntegerEntry(Base):
 	__tablename__ = 'integer'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Integer, nullable = False)
+	entry = Column(Numeric(20, 0), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -285,7 +285,7 @@ class TwoDecimal(Base):
 	__tablename__ = 'currency'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Numeric(precision=15, scale=2), nullable = False)
+	entry = Column(Numeric(precision=20, scale=2), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
@@ -302,7 +302,7 @@ class LargeDecimal(Base):
 	__tablename__ = 'precision_num'
 
 	id = Column(Integer, primary_key=True) 
-	entry = Column(Float(25), nullable = False)
+	entry = Column(Numeric(precision=20, scale=20), nullable = False)
 	votes = Column(Integer, nullable = True)
 
 	heading_id = Column(Integer, ForeignKey('heading.id'))
