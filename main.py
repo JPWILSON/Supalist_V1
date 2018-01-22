@@ -502,6 +502,9 @@ def EditColumn(list_id, heading_id):
 	data_type_dict = {0: "TextEntry", 1: "IntegerEntry", 2: "DateEntry", 3: "TrueFalse",
 	 4: "TimeEntry", 5: "Duration", 6: "TwoDecimal", 7: "LargeDecimal"}
 
+	orig_hdng_dtype = heading_2_edit.entry_data_type
+	print "before edit, this is dtype (num, word): ", orig_hdng_dtype, data_type_dict[orig_hdng_dtype]
+
 	#Defining the logic determining creator of item (only person allowed to delete)
 	owner = heading_2_edit.user
 	deletable_h = False # This is val passed to template about wether delete button (for lists) will do what's required or popup saying not allowed 
@@ -514,10 +517,27 @@ def EditColumn(list_id, heading_id):
 	if request.method == 'POST':
 		heading_2_edit.name = request.form['namer']
 		heading_2_edit.description = request.form['desc']
-		heading_2_edit.entry_data_type = request.form['data_type']
+		#heading_2_edit.entry_data_type = request.form['data_type'] -see paragraph below, cannot edit the data type. 
+		print "New dataType: ", heading_2_edit.entry_data_type
 		session.add(heading_2_edit)
 		session.commit()
+
+		#Now, if the data type changed, then ALLL the data entries for this type must be remade:
+		#Actually, CANNOT do this, as the format of all entries will be different, so make a popup sayin you cannot edit a data type's type 
+		"""if heading_2_edit.entry_data_type != orig_hdng_dtype:
+			entries_2del_and_replace = session.query(data_type_dict[orig_hdng_dtype]).filter_by(heading_id = heading_id).all()
+			for e in entries_2del_and_replace:
+				print "e.name: ", e.name
+				newhi = HeadingItem(name=e.name, description=e.description, entry_data_type = heading_2_edit.entry_data_type, votes=0, lists= e.lists, user=e.user)
+				session.add(newhi)
+				session.commit()
+
+				session.delete(e)
+				session.commit()"""
+
+
 		flash("Damn Son! You just edited the heading: {}".format(heading_2_edit.name))
+
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('edit_column.html', list_id = list_id, heading = heading_2_edit, list_name = owning_list.name, 
@@ -588,6 +608,12 @@ def AddRow(list_id):
 				print "This is a default value added for a number entry that was left blank ", form_val, str(stri)[-11:-2]
 				form_val = 0
 				print form_val
+			elif str(stri)[-11:-2] == "TextEntry":
+				if type(form_val) != str:
+					print "Form val type: ", type(form_val)
+					form_val = str(form_val)
+					print "Form val type: ", type(form_val)
+
 			print "new form val: ", form_val
 			e1 = stri(entry=form_val, votes=0, heading = heading_items[i] , lists =new_row, user = getUser())
 			session.add(e1)

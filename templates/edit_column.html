@@ -94,9 +94,11 @@
 
 					<div class = "col-md-6">
 						<div class="form-group">
-							<label >Data Type</label>
-							<!-- <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1"> -->
-							<label for="sel1">Data Type (select one):</label>
+							<label >Data Type: {{data_type_dict[heading.entry_data_type]}}</label>
+							<p>NOTE: YOU CANNOT CHANGE THE DATA TYPE, AS THIS WILL AFFECT ALL OTHER ENTRIES IN THE LIST. RATHER ADD A NEW COLUMN WITH
+							THE DESIRED DATA TYPE</p>
+							<!-- <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword  1"> 
+							<label for="sel1">(select one):</label>
 							<select class="form-control" id="sel1" name="data_type">
 								{% for key in data_type_dict %}
 									{% if heading.entry_data_type ==  key %} 
@@ -106,21 +108,24 @@
 									{% endif %}
 								{% endfor %}
 							</select>
-							<!-- <span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span> -->
+							<span class="help-block">E.G. If you wanted to add a column for middle name, for the 'people' list, the name would be: 'Middle Name'</span>
 							<small id="emailHelp" class="form-text text-muted">E.G. If your heading is a date, choose date. If it is a name, choose short text, etc</small>
-						</div><span class = "col-md-1"></span>
+
+						<span class = "col-md-1"></span>--></div>
+						<br>
 
 
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-12">
 							<label >Column Keyword (2 Optional)</label>
 							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 2">
-						</div><span class = "col-md-1"></span>
-
-						<div class="form-group col-md-6">
+						</div><span class = "col-md-6"></span>
+						<br>
+						<div class="form-group col-md-12">
 							<label >Column Keyword (3 Optional)</label><br>
-							<span class = "col-md-3"></span>
+							<span class = "col-md-6"></span>
 							<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Keyword 3">
 						</div>
+						<br>
 					</div>
 				</div>
 				<div class="row">

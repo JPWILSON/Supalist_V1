@@ -14,6 +14,12 @@ a = str(di)
 st = "This is a string"
 print "Ffg is a type for the string of the var name for the dict, type for dict, type for the string"
 print type(a), type(di), type(st)
+
+if type(a) == str:
+	print "True Bud"
+else:
+	print "falsey"
+
 """
 
 li = session.query(List).all()
