@@ -1,3 +1,4 @@
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, list_keywords, List, ListKeyword, HeadingItem
@@ -8,18 +9,22 @@ engine = create_engine('postgresql+psycopg2://catalog:db-password@localhost/supa
 Base.metadata.bind = engine 
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
-
+"""
+a = 1
+b = "This is a string"
+d = "hi"
+c = int(d)
 di = []
-a = str(di)
-st = "This is a string"
-print "Ffg is a type for the string of the var name for the dict, type for dict, type for the string"
-print type(a), type(di), type(st)
-
-if type(a) == str:
-	print "True Bud"
-else:
-	print "falsey"
-
+di.append(a)
+di.append(b)
+di.append(c)
+di.append(d)
+print di
+for e in di:
+	if type(e) == int:
+		print "So its an integer!"
+	else:
+		print "Nope"
 """
 
 li = session.query(List).all()

@@ -660,7 +660,8 @@ def EditRow(list_id, row_id):
 				dtype_A = data_types[headings[i].entry_data_type]
 				#print "namer is: ", namer, "This is the data type: ",data_types[headings[i].entry_data_type], dtype_A, "Main part: ",str(dtype_A)[-11:-2]
 				if str(dtype_A)[-11:-2] == "egerEntry":
-					if type(entries[i][1].entry) != int:
+					if type(int(entries[i][1].entry)) != int:
+						#print "It is not an integer apparently, its an: ", type(entries[i][1].entry), type(int(entries[i][1].entry))
 						entries[i][1].entry = 0
 					#if entries[i][1].entry == '' or entries[i][1].entry == ' ':
 				elif str(dtype_A)[-11:-2] == "woDecimal" or str(dtype_A)[-11:-2] == "geDecimal":
