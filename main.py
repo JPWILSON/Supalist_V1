@@ -604,10 +604,12 @@ def AddRow(list_id):
 				#print "True"
 				if len(form_val) < 1 or str(form_val)[4] != "-" or form_val== '':
 					form_val = datetime.strptime('0001-01-01' , '%Y-%m-%d')
-			elif str(stri)[-11:-2] == "egerEntry" or  str(stri)[-11:-2] == "woDecimal" or str(stri)[-11:-2] == "geDecimal":
-				#print "This is a default value added for a number entry that was left blank ", form_val, str(stri)[-11:-2]
-				form_val = 0
-				#print form_val
+			elif str(stri)[-11:-2] == "egerEntry":
+				if type(int(form_val)) != int:
+					form_val = 0
+			elif str(stri)[-11:-2] == "woDecimal" or str(stri)[-11:-2] == "geDecimal":
+				if form_val == '' or form_val == ' ':
+					form_val = 0.00
 			elif str(stri)[-11:-2] == "TextEntry":
 				if type(form_val) != str:
 					#print "Form val type: ", type(form_val)
