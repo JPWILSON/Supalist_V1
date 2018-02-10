@@ -10,21 +10,17 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 """
-a = 1
-b = "This is a string"
-d = "hi"
-c = int(d)
-di = []
-di.append(a)
-di.append(b)
-di.append(c)
-di.append(d)
-print di
-for e in di:
-	if type(e) == int:
-		print "So its an integer!"
-	else:
-		print "Nope"
+
+d = {}
+num =''
+for i in range(1, 11):
+	print i
+	d[i] = num
+	num+='-'
+
+
+for j in d:
+    print j, d[j]
 """
 
 li = session.query(List).all()

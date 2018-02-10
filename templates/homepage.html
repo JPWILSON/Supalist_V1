@@ -55,7 +55,9 @@
 							<tbody>
 								{%  for li in all_lists %}
 								<tr>
-									<td class="bold"><a href="{{url_for('QueryList', list_id = li.id)}}" >{{li.name}}</a></td><!--class = "btn btn-primary"-->
+									<td class="bold">
+										<a href="{{url_for('QueryList', list_id = li.id)}}" >{{li.name}}</a>
+									</td><!--class = "btn btn-primary"-->
 									{% for heading in lists_and_headings[li] %}
 									<td>{{heading.name}}</td>
 									{%  endfor %}

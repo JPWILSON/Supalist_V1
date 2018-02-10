@@ -11,7 +11,7 @@ from database_setup import TrueFalse, TimeEntry, Duration, TwoDecimal, LargeDeci
 
 #Oauth for google steps: 
 from flask import session as login_session
-import random, string 
+import random, string , operator
 
 
 from oauth2client.client import flow_from_clientsecrets
@@ -396,20 +396,25 @@ def DeleteList(list_id):
 			headings2del = headings2del, no_rows_2_del=len(rows_2_del), logged_in=logged_in, un=un)
 	return "Are you sure you want to delete this list? (only certain privileges will allow you to delete a list? - or never?) list{}".format(list_id)
 
-@app.route('/<int:list_id>/')
-def QueryList(list_id):
+order_by_heading = 0 
+rev = 0
 
+@app.route('/<int:list_id>/', methods = ['GET', 'POST'])
+def QueryList(list_id):
 #Logged in logic and rules (permissions, etc)
+	global order_by_heading
+	global rev
 	logged_in = False
 	un = ''
 	if 'username' in login_session:
 		logged_in = True
 		un = login_session['username']
 
-
 	list_to_view = session.query(List).filter_by(id = list_id).first()
 	#heading_items = session.query(HeadingItem).filter_by(list_id = list_to_view.id).order_by(asc(HeadingItem.id))
 	heading_items = session.query(HeadingItem).filter_by(list_id = list_to_view.id).order_by(HeadingItem.id.asc())
+	#print heading_items.count(), "is the number of headings (columns)"
+
 	rows = session.query(Row).filter_by(list_id = list_to_view.id).order_by(Row.id.asc())
 	row_entries = {}
 
@@ -428,8 +433,51 @@ def QueryList(list_id):
 			for i in (session.query(e).filter_by(row_id = row.id).all()):
 				row_entries[row.id].append(i)
 		(row_entries[row.id]).sort(key=lambda x: int(x.heading_id))
-	return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, 
-		row_entries = row_entries, lid = list_id, data_types_str = data_types_str, logged_in=logged_in, un=un, deletable_l = deletable_l)
+		#print "Each part of the dictionary ", type(row_entries[row.id]) ok so each dict value is a list of entry objects 
+		
+		#(row_entries[row.id]).sort(key=lambda x: int(x.heading_id),reverse=True)
+	#a = False
+	#order_rows_by = 0
+	#The line below converts the dictionary into a list of tuples where tuple is len2 1st item key, item 2 is a list of data entry objects
+	#sorted_rows = sorted(row_entries.items(), key = lambda x: x[1][0].entry)
+	sorted_rows = sorted(row_entries.items(), key = lambda x: x[1][order_by_heading].entry, reverse = rev)
+	#Methodolgy:   , reverse = True
+	"""
+	Grab the value from the radio button choice. Split it into heading and order(asc or desc).
+	Grab the heading that is needed from the radio button - equate this to an index in sorted_rows for which heading to order from. 
+	and then order sorted rows according to this and add reverse/ not depending on the order. 
+	"""
+
+	# This block is just test code to see how the to order rows
+	"""
+	counter = 0 #This is counting each of the heading items
+	for k in heading_items:
+		print "Heading name: ", k.name
+		sorted_rows = sorted(row_entries.items(), key = lambda x: x[1][counter].entry)
+		i = 0  #This is a count of each row
+		for e in rows: 
+			#               li of tuples       tuples    			len of tuple 	      int-key of tuple(rowid?)  list of entry objects    first object in list    	  
+			print "Types: ",type(sorted_rows), type(sorted_rows[i]), len(sorted_rows[i]), type(sorted_rows[i][0]), type(sorted_rows[i][1]), type(sorted_rows[i][1][counter])
+			#Now, for each heading item in each row:
+			it = 0  #This is counting each heading item in each row....
+			for item in heading_items:
+				print "Entry: ", sorted_rows[i][1][it].entry #value of entry of this object(we want to order by this)
+				print "Done with {}th heading from row {}".format(it,i)
+				it += 1
+			i += 1
+		counter += 1
+		print "Done with {}th row".format(i), "\n"
+	print"Done with all rows!"
+	"""
+
+	if request.method == 'POST':
+		order_by_heading = int(request.form["heading"][:1])-1
+		rev = int(request.form["heading"][1:])
+		return redirect(url_for('QueryList', list_id = list_id))
+	else:                      
+		return render_template('view.html', list = list_to_view, h_items = heading_items, rows = rows, 
+		row_entries = row_entries, lid = list_id, data_types_str = data_types_str, logged_in=logged_in, 
+		un=un, deletable_l = deletable_l, sorted_rows = sorted_rows)
 	#return "A single list that you can view or inspect/query (this should be the most important\
 	#feature, and \n it is from here that you would add to the list (edit). list{}".format(list_id)
 
@@ -452,7 +500,9 @@ def AddColumn(list_id):
 		return redirect(url_for('QueryList', list_id = list_id))
 	else:
 		return render_template('add_column.html', list_id = list_id, lname = list_to_add_to.name, data_types=data_types_tuple, logged_in=logged_in, un=un)
-		"""
+
+
+"""
 	kw1 = request.form['kw1']
 	if kw1 != None:
 		newli.l_keywords.append(ListKeyword(keyword = kw1))
